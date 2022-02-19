@@ -30,7 +30,8 @@ const submit = () => {
         <Head title="Reset Password" />
 
         <BreezeValidationErrors class="mb-4" />
-
+         <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
         <form @submit.prevent="submit">
             <div>
                 <BreezeLabel for="email" value="Email" />
@@ -53,5 +54,7 @@ const submit = () => {
                 </BreezeButton>
             </div>
         </form>
+        </div>
+         </div>
     </BreezeGuestLayout>
 </template>

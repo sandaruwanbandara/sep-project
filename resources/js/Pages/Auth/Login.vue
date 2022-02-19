@@ -33,9 +33,10 @@ const submit = () => {
 
         <BreezeValidationErrors class="mb-4" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
+        <div v-if="status" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
+            <p> {{ status }}</p>
         </div>
+
         <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8">
         <form @submit.prevent="submit">
