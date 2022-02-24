@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\MenuTypeController;
 use Inertia\Inertia;
 
 /*
@@ -32,7 +34,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/profile', 'index')->name('profile');
         Route::post('/profile', 'update')->name('profile.update');
-        Route::post('/profile/password', 'passwordUpdate')->name('profile.password');
+    });
+
+    Route::controller(RegisteredUserController::class)->group(function () {
+        Route::post('/password', 'passwordUpdate')->name('password.change');
+    });
+
+    Route::controller(MenuTypeController::class)->group(function () {
+        Route::get('/menu-type', 'index')->name('menu_type.index');
     });
 
 });

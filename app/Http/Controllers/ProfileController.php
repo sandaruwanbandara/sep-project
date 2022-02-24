@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -32,24 +33,15 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required',
             'about' => 'required',
-            'contact' => 'required',
+            'contact' => ['required', 'min:9', 'max:10'],
         ]);
-        return redirect()->route('profile');
-    }
-
-    /**
-     * Update the password.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function passwordUpdate(Request $request)
-    {
-        $request->validate([
-            'new_password' => ['required', 'confirmed', Password::min(8)->mixedCase()],
-            'password' => ['required'],
+        $user = Auth::user();
+        $result = $user->update([
+            'name' => $request->name,
+            'about' => $request->about,
+            'contact' => $request->contact 
         ]);
-        return redirect()->route('profile');
-    }
 
+        return redirect()->route('profile')->with(['message' => 'successfully updated the profile']);
+    }
 }

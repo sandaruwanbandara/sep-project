@@ -4,12 +4,12 @@ import { Head } from '@inertiajs/inertia-vue3';
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Home" />
 
     <BreezeAuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard - Welcome {{$page.props.auth.user.name}} !
+                Home - Welcome {{$page.props.auth.user.name}} !
             </h2>
         </template>
 

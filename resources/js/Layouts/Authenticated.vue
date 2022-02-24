@@ -18,7 +18,7 @@ defineProps({
 
 <template>
     <div>
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-gray-50">
             <MainNav :canLogin="canLogin" :canRegister="canRegister"></MainNav>
             <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">

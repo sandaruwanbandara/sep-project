@@ -57,4 +57,29 @@ class RegisteredUserController extends Controller
 
         return redirect(RouteServiceProvider::HOME);
     }
+
+    /**
+     * Update the password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function passwordUpdate(Request $request)
+    {
+        $request->validate([
+            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()],
+            'old_password' => ['required'],
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->old_password, $user->password)) {
+            return redirect()->route('profile')->withErrors(["old_password"=>"Current password is invalid"]);
+        }
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('profile')->with(['message' => 'password updated successfully']);
+    }
 }
