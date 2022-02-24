@@ -1,36 +1,44 @@
 <script setup>
 import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
-import { Head } from "@inertiajs/inertia-vue3";
-import { PaperClipIcon } from "@heroicons/vue/solid";
+import { Head,useForm } from "@inertiajs/inertia-vue3";
 import BreezeInput from "@/Components/Input.vue";
 import BreezeButton from "@/Components/Button.vue";
 import { reactive } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
+import FlashMessages from '@/Components/FlashMessages.vue';
 
 const props = defineProps({
   user: Object,
   status: String,
 });
 
-const prof_form = reactive({
+const prof_form = useForm({
   name: props.user.name,
   about: props.user.about,
   contact: props.user.contact,
 });
 
 function prof_submit() {
-  Inertia.post("/profile", prof_form);
+  prof_form.post(route('profile.update'));
 }
 
-const cred_form = reactive({
-  new_password: '',
-  new_password_confirmation: '',
+const cred_form = useForm({
   password: '',
+  password_confirmation: '',
+  old_password: '',
 });
 
 function cred_submit() {
-  Inertia.post("/profile/password", cred_form);
+  cred_form.post(route('password.change'), {
+      onFinish: () => resetPassword(),
+  });
+}
+
+function resetPassword(){
+  cred_form.password = "",
+  cred_form.password_confirmation = '',
+  cred_form.old_password = ''
 }
 </script>
 
@@ -39,18 +47,17 @@ function cred_submit() {
 
     <Head title="Profile" />
 
-    <BreezeValidationErrors class="mb-4" />
+    <BreezeValidationErrors />
 
-    <div v-if="status" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
-        <p> {{ status }}</p>
-    </div>
+    <FlashMessages/>
+
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
         Profile
       </h2>
     </template>
 
-    <div class="py-12">
+    <div class="py-8">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <form @submit.prevent="prof_submit">
           <div class="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -126,28 +133,28 @@ function cred_submit() {
                 <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">New Password</dt>
                   <BreezeInput
-                    id="new_password"
+                    id="password"
                     type="password"
                     class="mt-1 block w-full"
-                    v-model="cred_form.new_password"
+                    v-model="cred_form.password"
                   />
                 </div>
                 <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">Retype new password</dt>
                   <BreezeInput
-                    id="re_new_password"
+                    id="password_confirmation"
                     type="password"
                     class="mt-1 block w-full"
-                    v-model="cred_form.new_password_confirmation"
+                    v-model="cred_form.password_confirmation"
                   />
                 </div>
                 <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">Current password</dt>
                   <BreezeInput
-                    id="password"
+                    id="old_password"
                     type="password"
                     class="mt-1 block w-full"
-                    v-model="cred_form.password"
+                    v-model="cred_form.old_password"
                   />
                 </div>
               </dl>

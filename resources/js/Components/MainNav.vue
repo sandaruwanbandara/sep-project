@@ -103,7 +103,7 @@ export default {
               aria-hidden="true"
             />
             <span class="ml-3 text-base font-medium text-gray-900">
-              Dashboard
+              Home
             </span>
           </a>
           <a
@@ -120,7 +120,7 @@ export default {
             </span>
           </a>
           <a
-            href="/"
+            :href="route('menu_type.index')"
             class="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
           >
             <component
@@ -130,6 +130,19 @@ export default {
             />
             <span class="ml-3 text-base font-medium text-gray-900">
               Menu Types
+            </span>
+          </a>
+          <a
+            href="/"
+            class="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
+          >
+            <component
+              :is="ClipboardIcon"
+              class="flex-shrink-0 h-6 w-6 text-indigo-600"
+              aria-hidden="true"
+            />
+            <span class="ml-3 text-base font-medium text-gray-900">
+              Menu Items
             </span>
           </a>
           <a
@@ -250,7 +263,7 @@ export default {
                     aria-hidden="true"
                   />
                   <span class="ml-3 text-base font-medium text-gray-900">
-                    Dashboard
+                    Home
                   </span>
                 </a>
                 <a
@@ -267,7 +280,7 @@ export default {
                   </span>
                 </a>
                 <a
-                  href="/"
+                  :href="route('menu_type.index')"
                   class="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
                 >
                   <component
@@ -277,6 +290,19 @@ export default {
                   />
                   <span class="ml-3 text-base font-medium text-gray-900">
                     Menu Types
+                  </span>
+                </a>
+                <a
+                  href="/"
+                  class="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
+                >
+                  <component
+                    :is="ClipboardIcon"
+                    class="flex-shrink-0 h-6 w-6 text-indigo-600"
+                    aria-hidden="true"
+                  />
+                  <span class="ml-3 text-base font-medium text-gray-900">
+                    Menu Items
                   </span>
                 </a>
                 <a

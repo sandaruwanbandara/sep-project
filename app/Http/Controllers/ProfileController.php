@@ -42,7 +42,7 @@ class ProfileController extends Controller
 
         $user->where('email',$logged_user->email)->update($user_params);
 
-        return redirect()->route('profile');
+        return redirect()->route('profile')->with(['message' => 'profile info successfully updated']);
     }
 
     /**
@@ -65,7 +65,6 @@ class ProfileController extends Controller
             $user->where('email',$logged_user->email)->update(['password'=>$upwd_params]);
         }
 
-        return redirect()->route('profile');
+        return redirect()->route('profile')->with(['message' => 'pasword successfully updated']);
     }
-
 }
