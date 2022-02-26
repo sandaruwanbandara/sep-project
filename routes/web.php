@@ -42,6 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::controller(MenuTypeController::class)->group(function () {
         Route::get('/menu-type', 'index')->name('menu_type.index');
+        Route::post('/menu-type', 'store')->name('menu_type.store');
     });
 
 });

@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MenuType;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\Password;
 
 class MenuTypeController extends Controller
 {
@@ -16,24 +13,18 @@ class MenuTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function  _construct(MenuType $menutype){
-       // Menutype $menutype
-    }
     public function index()
     {
-        return Inertia::render('Menutype',[
-            'user' => Auth::user()
+        return Inertia::render('MenuType',[
+            'user' => Auth::user(),
+            'items' => [
+                ['id' => 1, 'name' => 'Rice', 'display_name' => 'Rice', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
+                ['id' => 2, 'name' => 'Soup', 'display_name' => 'Soup', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
+                ['id' => 3, 'name' => 'Noodles', 'display_name' => 'Noodles', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
+                ['id' => 1, 'name' => 'Koththu', 'display_name' => 'Koththu', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
+                ['id' => 1, 'name' => 'Pasta', 'display_name' => 'Pasta', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
+            ]
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $menu_type_rs =  $this->menutype->select()->where('user_id',Auth::user()->id)->get();
     }
 
     /**
@@ -44,7 +35,12 @@ class MenuTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'display_name' => 'required'
+        ]);
+
+        return redirect()->route('menu_type.index')->with(['message' => 'successfully created '.$request->name.' menu category']);
     }
 
     /**
