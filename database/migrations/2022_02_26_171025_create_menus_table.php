@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('m_type_id');
             $table->integer('item_id');
             $table->string('menu_name');
+            $table->integer('qty');
         });
     }
 

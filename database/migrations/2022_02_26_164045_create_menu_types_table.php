@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->integer('user_id');
-            $table->string('m_name');
+            $table->string('mt_name');
         });
     }
 

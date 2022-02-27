@@ -9,6 +9,8 @@ class MenuType extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['user_id','mt_name'];
+
     public function user()
     {
         return $this->belongsTo(User::class);

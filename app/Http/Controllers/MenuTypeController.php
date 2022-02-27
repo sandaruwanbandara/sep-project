@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MenuType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -13,17 +14,47 @@ class MenuTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    function __construct(MenuType $menuType)
     {
+        $this->menuType =$menuType ;
+
+    }
+
+    public function index(Request $request)
+    {
+
+        $request->validate([
+            'from' => 'integer',
+            'to' => 'integer'
+        ]);
+
+        $user =  Auth::user();
+        $menuTypeResults = $this->menuType->select()->where('user_id',$user->id)->get();
+        $item_count = $menuTypeResults->count();
+
+        $from_row =1;
+        $to_row  = 1;
+
+        if($item_count/10 > 1){
+           // dd($request->content);
+            if(empty($request->content)){
+                $menuTypeResults = $menuTypeResults->slice(0,10);
+                $to_row  = 10;
+            }else{
+
+            }
+        }else{
+            $to_row = $item_count;
+        }
+
+        $item_arr = $menuTypeResults->toArray();
+
+        $page_info_arr = ['total_row_count'=>$item_count,'from_row' => $from_row,'to_row'=>$to_row];
+
         return Inertia::render('MenuType',[
             'user' => Auth::user(),
-            'items' => [
-                ['id' => 1, 'name' => 'Rice', 'display_name' => 'Rice', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
-                ['id' => 2, 'name' => 'Soup', 'display_name' => 'Soup', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
-                ['id' => 3, 'name' => 'Noodles', 'display_name' => 'Noodles', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
-                ['id' => 1, 'name' => 'Koththu', 'display_name' => 'Koththu', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
-                ['id' => 1, 'name' => 'Pasta', 'display_name' => 'Pasta', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
-            ]
+            'items' => $item_arr,
+            'page_info' => $page_info_arr
         ]);
     }
 
@@ -37,8 +68,9 @@ class MenuTypeController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'display_name' => 'required'
         ]);
+
+        $this->menuType->create(['user_id'=>Auth::user()->id,'mt_name'=>$request->name]);
 
         return redirect()->route('menu_type.index')->with(['message' => 'successfully created '.$request->name.' menu category']);
     }
@@ -86,5 +118,18 @@ class MenuTypeController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function tblRender($item_count,$from_row,$to_row){
+
+        if($item_count/10 > 1){
+            $menuTypeResults = $this->menuType->select()->offset($from_row)->limit($to_row)->get();
+        }else{
+            $to_row = $item_count;
+        }
+
+        $page_info_arr = ['total_row_count'=>$item_count,'from_row' => $from_row,'to_row'=>$to_row];
+
+        return [$page_info_arr];
     }
 }

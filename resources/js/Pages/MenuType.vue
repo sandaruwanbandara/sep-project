@@ -14,12 +14,12 @@ const props = defineProps({
   user: Object,
   status: String,
   items : Object,
+  page_info : Object
 });
 
 
 const menu_item_form = useForm({
-  name: '',
-  display_name: '',
+  name: ''
 });
 
 function menu_item_form_submit() {
@@ -29,8 +29,7 @@ function menu_item_form_submit() {
 }
 
 function resetForm(){
-  menu_item_form.name = "",
-  menu_item_form.display_name = ""
+  menu_item_form.name = ""
 }
 
 const searchQuery = ref('')
@@ -73,7 +72,7 @@ const searchQuery = ref('')
                                       v-model="menu_item_form.name"
                                     />
                                 </div>
-                                <div class="md:ml-2">
+                                <!-- <div class="md:ml-2">
                                     <label class="block mb-2 text-sm font-bold text-gray-700" for="lastName">
                                         Menu Category Display Name
                                     </label>
@@ -84,7 +83,7 @@ const searchQuery = ref('')
                                       placeholder="Display Name"
                                       v-model="menu_item_form.display_name"
                                     />
-                                </div>
+                                </div> -->
                                 <div class="md:ml-2">
                                     <label class="block mb-2 text-sm font-bold text-gray-700" for="lastName">
                                         &nbsp;
@@ -139,10 +138,10 @@ const searchQuery = ref('')
                                                         class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
                                                         Menu category
                                                     </th>
-                                                    <th
+                                                    <!-- <th
                                                         class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
                                                         Display name
-                                                    </th>
+                                                    </th> -->
                                                     <th
                                                         class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
                                                         Created at
@@ -168,14 +167,14 @@ const searchQuery = ref('')
                                                                     aria-hidden="true"
                                                                   />
                                                                 <span
-                                                                    class="ml-2 text-sm font-medium text-gray-900">{{item.name}}</span>
+                                                                    class="ml-2 text-sm font-medium text-gray-900">{{item.mt_name}}</span>
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">
+                                                    <!-- <td class="px-6 py-4 whitespace-nowrap">
                                                         <div class="text-sm text-gray-900">{{item.display_name}}
                                                         </div>
-                                                    </td>
+                                                    </td> -->
                                                     <td class="px-6 py-4 whitespace-nowrap">
                                                         <div class="text-sm text-gray-500">{{item.created_at}}</div>
                                                     </td>
@@ -194,7 +193,7 @@ const searchQuery = ref('')
                                         <div
                                             class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
                                             <span class="text-xs xs:text-sm text-gray-900">
-                                                Showing 1 to 4 of 50 Entries
+                                                Showing {{page_info.from_row}} to {{page_info.to_row}} of {{page_info.total_row_count}} Entries
                                             </span>
                                             <div class="inline-flex mt-2 xs:mt-0">
                                                 <button
