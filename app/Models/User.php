@@ -46,4 +46,12 @@ class User extends Authenticatable
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+
+    /**
+     * Get the comments for the blog post.
+     */
+    public function menu_type()
+    {
+        return $this->hasMany(MenuType::class);
+    }
 }

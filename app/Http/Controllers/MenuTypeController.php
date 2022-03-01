@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use App\Models\MenuType;
 
 class MenuTypeController extends Controller
 {
@@ -15,15 +16,10 @@ class MenuTypeController extends Controller
      */
     public function index()
     {
+        
         return Inertia::render('MenuType',[
             'user' => Auth::user(),
-            'items' => [
-                ['id' => 1, 'name' => 'Rice', 'display_name' => 'Rice', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
-                ['id' => 2, 'name' => 'Soup', 'display_name' => 'Soup', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
-                ['id' => 3, 'name' => 'Noodles', 'display_name' => 'Noodles', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
-                ['id' => 1, 'name' => 'Koththu', 'display_name' => 'Koththu', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
-                ['id' => 1, 'name' => 'Pasta', 'display_name' => 'Pasta', 'created_at' => '2022-02-18 18:53:34', 'updated_at' => '2022-02-18 18:53:34'],
-            ]
+            'items' => Auth::user()->menu_type()->paginate()
         ]);
     }
 
@@ -40,29 +36,14 @@ class MenuTypeController extends Controller
             'display_name' => 'required'
         ]);
 
+        $user = Auth::user();
+
+        $user->menu_type()->create([
+            'name' => $request->name,
+            'display_name' => $request->display_name
+        ]);
+
         return redirect()->route('menu_type.index')->with(['message' => 'successfully created '.$request->name.' menu category']);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -72,19 +53,38 @@ class MenuTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'display_name' => 'required',
+            'id' => 'required|exists:menu_types',
+        ]);
+        $item = Auth::user()->menu_type()->find($request->id);
+
+        $item->update([
+            'name' => $request->name,
+            'display_name' => $request->display_name
+        ]);
+
+        return redirect()->route('menu_type.index')->with(['message' => 'successfully update '.$request->name.' menu category']);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $request->validate([
+            'id' => 'required',
+        ]);
+        $item = Auth::user()->menu_type()->find($request->id);
+
+        $item->delete();
+
+        return redirect()->route('menu_type.index')->with(['message' => 'successfully deleted '.$item->name.' menu category']);
     }
 }
