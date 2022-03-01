@@ -15,9 +15,14 @@ return new class extends Migration
     {
         Schema::create('menu_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('type_id')->constrained('menu_types')->onDelete('cascade');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->double('price',8,2)->nullable();
+            $table->integer('availability')->default(1);
+            $table->integer('display')->default(1);
             $table->timestamps();
-            $table->integer('user_id');
-            $table->string('item_name');
         });
     }
 

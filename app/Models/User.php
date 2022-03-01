@@ -47,7 +47,10 @@ class User extends Authenticatable
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
-    public function menuType()
+    /**
+     * Get the menu type for user.
+     */
+    public function menu_type()
     {
         return $this->hasMany(MenuType::class);
     }
