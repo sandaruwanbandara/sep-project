@@ -43,6 +43,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::controller(MenuTypeController::class)->group(function () {
         Route::get('/menu-type', 'index')->name('menu_type.index');
         Route::post('/menu-type', 'store')->name('menu_type.store');
+        Route::get('/menu-type/{id}', 'edit')->name('menu_type.edit');
+        Route::delete('/menu-type/{id}', 'destroy')->name('menu_type.delete');
+        Route::patch('/menu-type/{id}', 'update')->name('menu_type.update');
     });
 
 });

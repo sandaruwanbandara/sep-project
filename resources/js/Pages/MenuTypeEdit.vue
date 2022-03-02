@@ -19,17 +19,18 @@ const props = defineProps({
 
 
 const menu_item_form = useForm({
-  name: ''
+  name: props.items.data[0].mt_name
 });
 
-function menu_item_form_submit() {
+function menu_item_form_submit(id) {
   console.log(menu_item_form );
-  menu_item_form.post(route('menu_type.store'),{
+  menu_item_form.patch(route('menu_type.update',id),{
       onFinish: () => resetForm(),
   });
 }
 
 function resetForm(){
+
   menu_item_form.name = ""
 }
 
@@ -59,7 +60,7 @@ const searchQuery = ref('')
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6 bg-white border-b border-gray-200">
-                            <form @submit.prevent="menu_item_form_submit">
+                            <form @submit.prevent="menu_item_form_submit(items.data[0].id)">
                             <div class="mb-4 md:flex md:justify-start">
                                 <div class="mb-4 md:mr-2 md:mb-0">
                                     <label class="block mb-2 text-sm font-bold text-gray-700" for="firstName">
@@ -73,18 +74,6 @@ const searchQuery = ref('')
                                       v-model="menu_item_form.name"
                                     />
                                 </div>
-                                <!-- <div class="md:ml-2">
-                                    <label class="block mb-2 text-sm font-bold text-gray-700" for="lastName">
-                                        Menu Category Display Name
-                                    </label>
-                                    <BreezeInput
-                                      id="display_name"
-                                      type="text"
-                                      class="mt-1 block w-full"
-                                      placeholder="Display Name"
-                                      v-model="menu_item_form.display_name"
-                                    />
-                                </div> -->
                                 <div class="md:ml-2">
                                     <label class="block mb-2 text-sm font-bold text-gray-700" for="lastName">
                                         &nbsp;
@@ -93,7 +82,7 @@ const searchQuery = ref('')
                                           :class="{ 'opacity-25': menu_item_form.processing, 'py-2': 'py-2' }"
                                           :disabled="menu_item_form.processing"
                                         >
-                                        Create
+                                        Update
                                       </BreezeButton>
                                 </div>
                             </div>
@@ -184,8 +173,6 @@ const searchQuery = ref('')
                                                     </td>
                                                     <td
                                                         class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                        <a :href="route('menu_type.edit', item.id)"
-                                                            class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
                                                         <a :href="route('menu_type.delete', item.id)" class="text-red-600 hover:text-red-900">Delete</a>
                                                     </td>
                                                 </tr>

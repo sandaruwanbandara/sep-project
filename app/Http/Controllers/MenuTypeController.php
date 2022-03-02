@@ -16,45 +16,48 @@ class MenuTypeController extends Controller
      */
     function __construct(MenuType $menuType)
     {
-        $this->menuType =$menuType ;
-
+        $this->menuType = $menuType;
     }
 
     public function index(Request $request)
     {
 
-        $request->validate([
-            'from' => 'integer',
-            'to' => 'integer'
-        ]);
+        // $request->validate([
+        //     'from' => 'integer',
+        //     'to' => 'integer'
+        // ]);
 
-        $user =  Auth::user();
-        $menuTypeResults = $this->menuType->select()->where('user_id',$user->id)->get();
-        $item_count = $menuTypeResults->count();
+        // $user =  Auth::user();
+        // $menuTypeResults = $this->menuType->select()->where('user_id',$user->id)->get();
+        // $item_count = $menuTypeResults->count();
 
-        $from_row =1;
-        $to_row  = 1;
+        // $from_row =1;
+        // $to_row  = 1;
 
-        if($item_count/10 > 1){
-           // dd($request->content);
-            if(empty($request->content)){
-                $menuTypeResults = $menuTypeResults->slice(0,10);
-                $to_row  = 10;
-            }else{
+        // if($item_count/10 > 1){
+        //    // dd($request->content);
+        //     if(empty($request->content)){
+        //         $menuTypeResults = $menuTypeResults->slice(0,10);
+        //         $to_row  = 10;
+        //     }else{
 
-            }
-        }else{
-            $to_row = $item_count;
-        }
+        //     }
+        // }else{
+        //     $to_row = $item_count;
+        // }
 
-        $item_arr = $menuTypeResults->toArray();
+        // $item_arr = $menuTypeResults->toArray();
 
-        $page_info_arr = ['total_row_count'=>$item_count,'from_row' => $from_row,'to_row'=>$to_row];
+        // $page_info_arr = ['total_row_count'=>$item_count,'from_row' => $from_row,'to_row'=>$to_row];
 
-        return Inertia::render('MenuType',[
-            'user' => Auth::user(),
-            'items' => $item_arr,
-            'page_info' => $page_info_arr
+        // return Inertia::render('MenuType',[
+        //     'user' => Auth::user(),
+        //     'items' => $item_arr,
+        //     'page_info' => $page_info_arr
+        // ]);
+        $user = Auth::user();
+        return Inertia::render('MenuType', [
+            'items' => MenuType::where('user_id',$user->id)->paginate(10)
         ]);
     }
 
@@ -70,9 +73,9 @@ class MenuTypeController extends Controller
             'name' => 'required',
         ]);
 
-        $this->menuType->create(['user_id'=>Auth::user()->id,'mt_name'=>$request->name]);
+        $this->menuType->create(['user_id' => Auth::user()->id, 'mt_name' => $request->name]);
 
-        return redirect()->route('menu_type.index')->with(['message' => 'successfully created '.$request->name.' menu category']);
+        return redirect()->route('menu_type.index')->with(['message' => 'successfully created ' . $request->name . ' menu category']);
     }
 
     /**
@@ -94,7 +97,10 @@ class MenuTypeController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = Auth::user();
+        return Inertia::render('MenuTypeEdit', [
+            'items' => MenuType::where('user_id',$user->id)->where('id',$id)->paginate(10)
+        ]);
     }
 
     /**
@@ -106,7 +112,13 @@ class MenuTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+       //dd($request);
+
+       $user = Auth::user();
+       MenuType::where('user_id', $user->id)->where('id',$id)->update(['mt_name'=>$request->name]);
+
+       return redirect()->route('menu_type.index')->with(['message' => 'successfully Updated' . $request->name . ' menu category']);
+
     }
 
     /**
@@ -120,15 +132,16 @@ class MenuTypeController extends Controller
         //
     }
 
-    public function tblRender($item_count,$from_row,$to_row){
+    public function tblRender($item_count, $from_row, $to_row)
+    {
 
-        if($item_count/10 > 1){
+        if ($item_count / 10 > 1) {
             $menuTypeResults = $this->menuType->select()->offset($from_row)->limit($to_row)->get();
-        }else{
+        } else {
             $to_row = $item_count;
         }
 
-        $page_info_arr = ['total_row_count'=>$item_count,'from_row' => $from_row,'to_row'=>$to_row];
+        $page_info_arr = ['total_row_count' => $item_count, 'from_row' => $from_row, 'to_row' => $to_row];
 
         return [$page_info_arr];
     }
