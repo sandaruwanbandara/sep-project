@@ -15,12 +15,13 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('name');
+            $table->time('available_from', $precision = 0)->nullable();
+            $table->time('available_to', $precision = 0)->nullable();
+            $table->integer('availability')->default(1);
+            $table->integer('display')->default(1);
             $table->timestamps();
-            $table->integer('user_id');
-            $table->integer('m_type_id');
-            $table->integer('item_id');
-            $table->string('menu_name');
-            $table->integer('qty');
         });
     }
 

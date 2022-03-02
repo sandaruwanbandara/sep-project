@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('menu_types', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('name');
+            $table->string('display_name');
             $table->timestamps();
-            $table->integer('user_id');
-            $table->string('mt_name');
         });
     }
 
