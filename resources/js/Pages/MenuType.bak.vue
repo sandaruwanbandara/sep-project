@@ -13,17 +13,18 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@headlessui/vue";
-import Pagination from '@/Components/Pagination'
-
 const props = defineProps({
   user: Object,
   status: String,
   items: Object,
 });
 const menu_item_form = useForm({
+  id: "",
   name: "",
 });
+
 let formButtonType = ref('Create')
+
 function menu_item_form_submit() {
   if (isEdit.value) {
     menu_item_form.put(route("menu_type.update"), {
@@ -37,21 +38,21 @@ function menu_item_form_submit() {
 }
 function resetForm() {
   menu_item_form.name = ""
+  menu_item_form.display_name = ""
+  menu_item_form.id = ""
   isEdit.value = false
   formButtonType.value = 'Create'
 }
-
 const searchQuery = ref("");
-
 const filteredItems = computed(() => {
   return props.items.data.filter((item) => {
     return (
       searchQuery.value.toLowerCase().length === 0 ||
-      item.mt_name.toLowerCase().includes(searchQuery.value.toLowerCase())
-     //this.$inertia.get(this.route(),this.)
+      item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
   });
 });
+
 
 let isOpen = ref(false);
 
@@ -63,30 +64,26 @@ function deleteItem(id) {
   setIsOpen(true)
   deleteForm.id = id
 }
-
-function deleteItemConfirm(id) {
-  deleteForm.delete(route("menu_type.destroy",deleteForm.id), {
+function deleteItemConfirm() {
+  deleteForm.delete(route("menu_type.destroy"), {
     onFinish: () => resetDeleteForm(),
   });
 }
-
 function resetDeleteForm() {
   setIsOpen(false);
   deleteForm.id = "";
 }
-
 function setIsOpen(value) {
   isOpen.value = value;
 }
-
 let isEdit = ref(false);
-
 function editItem(item) {
   menu_item_form.name = item.name
+  menu_item_form.display_name = item.display_name
+  menu_item_form.id = item.id
   isEdit.value = true
   formButtonType.value = 'Update'
 }
-
 </script>
 
 <template>
@@ -96,9 +93,9 @@ function editItem(item) {
 
     <BreezeValidationErrors />
 
-    <FlashMessages/>
+    <FlashMessages />
 
-<template #header>
+    <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
         Menu Categories
       </h2>
@@ -115,16 +112,14 @@ function editItem(item) {
           <DialogTitle class="block mb-2 text-sm font-bold text-gray-700">Confrimation</DialogTitle>
           <DialogDescription>This will permanently delete this record</DialogDescription>
           <p>Are you sure you want to continue? This action cannot be undone.</p>
-          <div class="float-right">
           <button
-            class="mr-2 justify-right px-2 py-1 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700"
-            @click="deleteItemConfirm()"
+            class="mr-2 justify-center px-2 py-1 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700"
+            @click="deleteItemConfirm"
           >Yes</button>
           <button
-            class="justify-right px-2 py-1 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+            class="justify-center px-2 py-1 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
             @click="setIsOpen(false)"
           >Cancel</button>
-          </div>
         </div>
       </div>
     </Dialog>
@@ -151,6 +146,21 @@ function editItem(item) {
                         class="mt-1 block w-full"
                         placeholder="Name"
                         v-model="menu_item_form.name"
+                      />
+                    </div>
+                    <div class="md:ml-2">
+                      <label
+                        class="block mb-2 text-sm font-bold text-gray-700"
+                        for="lastName"
+                      >
+                        Menu Category Display Name
+                      </label>
+                      <BreezeInput
+                        id="display_name"
+                        type="text"
+                        class="mt-1 block w-full"
+                        placeholder="Display Name"
+                        v-model="menu_item_form.display_name"
                       />
                     </div>
                     <div class="md:ml-2">
@@ -212,6 +222,9 @@ function editItem(item) {
                               Menu category
                             </th>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
+                              Display name
+                            </th>
+                            <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
                               Created at
                             </th>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
@@ -235,8 +248,12 @@ function editItem(item) {
                                     class="flex-shrink-0 h-6 w-6 text-indigo-600"
                                     aria-hidden="true"
                                   />
-                                  <span class="ml-2 text-sm font-medium text-gray-900">{{item.mt_name}}</span>
+                                  <span class="ml-2 text-sm font-medium text-gray-900">{{item.name}}</span>
                                 </div>
+                              </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                              <div class="text-sm text-gray-900">{{item.display_name}}
                               </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -246,11 +263,14 @@ function editItem(item) {
                               <div class="text-sm text-gray-500">{{item.updated_at}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <a :href="route('menu_type.edit', item.id)" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                              <button
+                              <a
+                                @click="editItem(item)"
+                                class="text-indigo-600 hover:text-indigo-900 mr-3"
+                              >Edit</a>
+                              <a
                                 @click="deleteItem(item.id)"
                                 class="text-red-600 hover:text-red-900"
-                              >Delete</button>
+                              >Delete</a>
                             </td>
                           </tr>
                         </tbody>

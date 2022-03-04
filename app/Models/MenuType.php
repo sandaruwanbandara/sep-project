@@ -15,8 +15,8 @@ class MenuType extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'display_name'
+        'mt_name',
+        'user_id'
     ];
 
      /**

@@ -16,14 +16,14 @@ class MenuTypeController extends Controller
      */
     function __construct(MenuType $menuType)
     {
-        $this->menuType = $menuType ;
+        $this->menuType = $menuType;
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        return Inertia::render('MenuType',[
-            'user' => Auth::user(),
-            'items' => Auth::user()->menu_type()->paginate()
+        $user = Auth::user();
+        return Inertia::render('MenuType', [
+            'items' => MenuType::where('user_id',$user->id)->paginate(10)
         ]);
     }
 
@@ -35,19 +35,41 @@ class MenuTypeController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->name);
         $request->validate([
             'name' => 'required',
-            'display_name' => 'required'
         ]);
-
+        
         $user = Auth::user();
+       // dd($user->id);
+        $this->menuType->create(['user_id' => $user->id, 'mt_name' => $request->name]);
 
-        $user->menu_type()->create([
-            'name' => $request->name,
-            'display_name' => $request->display_name
+        return redirect()->route('menu_type.index')->with(['message' => 'successfully created ' . $request->name . ' menu category']);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $user = Auth::user();
+        return Inertia::render('MenuTypeEdit', [
+            'items' => MenuType::where('user_id',$user->id)->where('id',$id)->paginate(10)
         ]);
-
-        return redirect()->route('menu_type.index')->with(['message' => 'successfully created '.$request->name.' menu category']);
     }
 
     /**
@@ -57,38 +79,40 @@ class MenuTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required',
-            'display_name' => 'required',
-            'id' => 'required|exists:menu_types',
-        ]);
-        $item = Auth::user()->menu_type()->find($request->id);
 
-        $item->update([
-            'name' => $request->name,
-            'display_name' => $request->display_name
-        ]);
+       $user = Auth::user();
+       MenuType::where('user_id', $user->id)->where('id',$id)->update(['mt_name'=>$request->name]);
 
-        return redirect()->route('menu_type.index')->with(['message' => 'successfully update '.$request->name.' menu category']);
+       return redirect()->route('menu_type.index')->with(['message' => 'successfully Updated' . $request->name . ' menu category']);
+
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $request->validate([
-            'id' => 'required',
-        ]);
-        $item = Auth::user()->menu_type()->find($request->id);
+       MenuType::destroy($id);
 
-        $item->delete();
+       return redirect()->route('menu_type.index')->with(['message' => 'Record successfully deleted']);
+    }
 
-        return redirect()->route('menu_type.index')->with(['message' => 'successfully deleted '.$item->name.' menu category']);
+    public function tblRender($item_count, $from_row, $to_row)
+    {
+
+        if ($item_count / 10 > 1) {
+            $menuTypeResults = $this->menuType->select()->offset($from_row)->limit($to_row)->get();
+        } else {
+            $to_row = $item_count;
+        }
+
+        $page_info_arr = ['total_row_count' => $item_count, 'from_row' => $from_row, 'to_row' => $to_row];
+
+        return [$page_info_arr];
     }
 }
