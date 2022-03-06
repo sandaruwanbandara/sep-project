@@ -23,7 +23,7 @@ class MenuTypeController extends Controller
     {
         return Inertia::render('MenuType',[
             'user' => Auth::user(),
-            'items' => Auth::user()->menu_type()->paginate()
+            'items' => Auth::user()->menu_type()->paginate(5)
         ]);
     }
 

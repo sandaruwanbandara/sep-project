@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\MenuTypeController;
+use App\Http\Controllers\MenuItemController;
 use Inertia\Inertia;
 
 /*
@@ -45,6 +46,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/menu-type', 'store')->name('menu_type.store');
         Route::delete('/menu-type', 'destroy')->name('menu_type.destroy');
         Route::put('/menu-type/update', 'update')->name('menu_type.update');
+    });
+
+    Route::controller(MenuItemController::class)->group(function () {
+        Route::get('/menu-item', 'index')->name('menu_item.index');
     });
 
 });

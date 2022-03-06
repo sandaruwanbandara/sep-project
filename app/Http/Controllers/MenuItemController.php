@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMenuItemRequest;
 use App\Http\Requests\UpdateMenuItemRequest;
 use App\Models\MenuItem;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class MenuItemController extends Controller
 {
@@ -15,7 +17,10 @@ class MenuItemController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('MenuItem',[
+            'user' => Auth::user(),
+            'types' => Auth::user()->menu_type
+        ]);
     }
 
     /**
