@@ -5,7 +5,6 @@ import BreezeButton from "@/Components/Button.vue";
 import BreezeValidationErrors from "@/Components/ValidationErrors.vue";
 import FlashMessages from "@/Components/FlashMessages.vue";
 import BreezeInput from "@/Components/Input.vue";
-import BreezeCheckbox from "@/Components/Checkbox.vue";
 import BreezeSelect from "@/Components/Select.vue";
 import { reactive, ref, computed } from "vue";
 import { BookmarkIcon } from "@heroicons/vue/outline";
@@ -104,8 +103,8 @@ function editItem(item) {
   menuItemForm.type = item.type.id
   menuItemForm.description = item.description
   menuItemForm.price = item.price
-  menuItemForm.availability = item.availability
-  menuItemForm.display = item.display
+  menuItemForm.availability = (item.availability == 'Yes') ? true : false
+  menuItemForm.display = (item.display == 'Yes') ? true : false
   isEdit.value = true
   formButtonType.value = 'Update'
 }
@@ -224,7 +223,7 @@ function editItem(item) {
                       >
                         Availability
                       </label>
-                      <BreezeCheckbox v-model="menuItemForm.availability"/>
+                      <input type="checkbox" v-model="menuItemForm.availability" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     </div>
                     <div class="md:ml-2 flex-1">
                       <label
@@ -233,7 +232,7 @@ function editItem(item) {
                       >
                         Display
                       </label>
-                      <BreezeCheckbox v-model="menuItemForm.display"/>
+                      <input type="checkbox" v-model="menuItemForm.display" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     </div>
                   </div>
                   <div class="mb-4 md:flex md:justify-start">

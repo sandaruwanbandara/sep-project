@@ -24822,12 +24822,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/Components/ValidationErrors.vue */ "./resources/js/Components/ValidationErrors.vue");
 /* harmony import */ var _Components_FlashMessages_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/Components/FlashMessages.vue */ "./resources/js/Components/FlashMessages.vue");
 /* harmony import */ var _Components_Input_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/Components/Input.vue */ "./resources/js/Components/Input.vue");
-/* harmony import */ var _Components_Checkbox_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/Components/Checkbox.vue */ "./resources/js/Components/Checkbox.vue");
-/* harmony import */ var _Components_Select_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/Components/Select.vue */ "./resources/js/Components/Select.vue");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-/* harmony import */ var _heroicons_vue_outline__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @heroicons/vue/outline */ "./node_modules/@heroicons/vue/outline/esm/index.js");
-/* harmony import */ var _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @headlessui/vue */ "./node_modules/@headlessui/vue/dist/components/dialog/dialog.esm.js");
-
+/* harmony import */ var _Components_Select_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/Components/Select.vue */ "./resources/js/Components/Select.vue");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+/* harmony import */ var _heroicons_vue_outline__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @heroicons/vue/outline */ "./node_modules/@heroicons/vue/outline/esm/index.js");
+/* harmony import */ var _headlessui_vue__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @headlessui/vue */ "./node_modules/@headlessui/vue/dist/components/dialog/dialog.esm.js");
 
 
 
@@ -24849,10 +24847,10 @@ __webpack_require__.r(__webpack_exports__);
     var expose = _ref.expose;
     expose();
     var props = __props;
-    var formButtonType = (0,vue__WEBPACK_IMPORTED_MODULE_8__.ref)('Create');
-    var searchQuery = (0,vue__WEBPACK_IMPORTED_MODULE_8__.ref)("");
-    var isOpen = (0,vue__WEBPACK_IMPORTED_MODULE_8__.ref)(false);
-    var isEdit = (0,vue__WEBPACK_IMPORTED_MODULE_8__.ref)(false);
+    var formButtonType = (0,vue__WEBPACK_IMPORTED_MODULE_7__.ref)('Create');
+    var searchQuery = (0,vue__WEBPACK_IMPORTED_MODULE_7__.ref)("");
+    var isOpen = (0,vue__WEBPACK_IMPORTED_MODULE_7__.ref)(false);
+    var isEdit = (0,vue__WEBPACK_IMPORTED_MODULE_7__.ref)(false);
     var menuItemForm = (0,_inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_1__.useForm)({
       id: "",
       type: "",
@@ -24890,7 +24888,7 @@ __webpack_require__.r(__webpack_exports__);
       formButtonType.value = 'Create';
     }
 
-    var filteredItems = (0,vue__WEBPACK_IMPORTED_MODULE_8__.computed)(function () {
+    var filteredItems = (0,vue__WEBPACK_IMPORTED_MODULE_7__.computed)(function () {
       return props.items.data.filter(function (item) {
         return searchQuery.value.toLowerCase().length === 0 || item.name.toLowerCase().includes(searchQuery.value.toLowerCase());
       });
@@ -24927,8 +24925,8 @@ __webpack_require__.r(__webpack_exports__);
       menuItemForm.type = item.type.id;
       menuItemForm.description = item.description;
       menuItemForm.price = item.price;
-      menuItemForm.availability = item.availability;
-      menuItemForm.display = item.display;
+      menuItemForm.availability = item.availability == 'Yes' ? true : false;
+      menuItemForm.display = item.display == 'Yes' ? true : false;
       isEdit.value = true;
       formButtonType.value = 'Update';
     }
@@ -24956,16 +24954,15 @@ __webpack_require__.r(__webpack_exports__);
       BreezeValidationErrors: _Components_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
       FlashMessages: _Components_FlashMessages_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
       BreezeInput: _Components_Input_vue__WEBPACK_IMPORTED_MODULE_5__["default"],
-      BreezeCheckbox: _Components_Checkbox_vue__WEBPACK_IMPORTED_MODULE_6__["default"],
-      BreezeSelect: _Components_Select_vue__WEBPACK_IMPORTED_MODULE_7__["default"],
-      reactive: vue__WEBPACK_IMPORTED_MODULE_8__.reactive,
-      ref: vue__WEBPACK_IMPORTED_MODULE_8__.ref,
-      computed: vue__WEBPACK_IMPORTED_MODULE_8__.computed,
-      BookmarkIcon: _heroicons_vue_outline__WEBPACK_IMPORTED_MODULE_9__.BookmarkIcon,
-      Dialog: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.Dialog,
-      DialogOverlay: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.DialogOverlay,
-      DialogTitle: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.DialogTitle,
-      DialogDescription: _headlessui_vue__WEBPACK_IMPORTED_MODULE_10__.DialogDescription
+      BreezeSelect: _Components_Select_vue__WEBPACK_IMPORTED_MODULE_6__["default"],
+      reactive: vue__WEBPACK_IMPORTED_MODULE_7__.reactive,
+      ref: vue__WEBPACK_IMPORTED_MODULE_7__.ref,
+      computed: vue__WEBPACK_IMPORTED_MODULE_7__.computed,
+      BookmarkIcon: _heroicons_vue_outline__WEBPACK_IMPORTED_MODULE_8__.BookmarkIcon,
+      Dialog: _headlessui_vue__WEBPACK_IMPORTED_MODULE_9__.Dialog,
+      DialogOverlay: _headlessui_vue__WEBPACK_IMPORTED_MODULE_9__.DialogOverlay,
+      DialogTitle: _headlessui_vue__WEBPACK_IMPORTED_MODULE_9__.DialogTitle,
+      DialogDescription: _headlessui_vue__WEBPACK_IMPORTED_MODULE_9__.DialogDescription
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -27183,21 +27180,23 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         })
       }, null, 8
       /* PROPS */
-      , ["modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [_hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["BreezeCheckbox"], {
-        modelValue: $setup.menuItemForm.availability,
+      , ["modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [_hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+        type: "checkbox",
         "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
           return $setup.menuItemForm.availability = $event;
-        })
-      }, null, 8
-      /* PROPS */
-      , ["modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [_hoisted_25, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["BreezeCheckbox"], {
-        modelValue: $setup.menuItemForm.display,
+        }),
+        "class": "rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+      }, null, 512
+      /* NEED_PATCH */
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelCheckbox, $setup.menuItemForm.availability]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [_hoisted_25, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+        type: "checkbox",
         "onUpdate:modelValue": _cache[6] || (_cache[6] = function ($event) {
           return $setup.menuItemForm.display = $event;
-        })
-      }, null, 8
-      /* PROPS */
-      , ["modelValue"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["BreezeButton"], {
+        }),
+        "class": "rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+      }, null, 512
+      /* NEED_PATCH */
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelCheckbox, $setup.menuItemForm.display]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["BreezeButton"], {
         "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)({
           'opacity-25': $setup.menuItemForm.processing,
           'py-2': 'py-2'
