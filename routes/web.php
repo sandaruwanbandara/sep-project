@@ -50,6 +50,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::controller(MenuItemController::class)->group(function () {
         Route::get('/menu-item', 'index')->name('menu_item.index');
+        Route::post('/menu-item', 'store')->name('menu_item.store');
+        Route::put('/menu-item/update', 'update')->name('menu_item.update');
+        Route::delete('/menu-item', 'destroy')->name('menu_item.destroy');
     });
 
 });

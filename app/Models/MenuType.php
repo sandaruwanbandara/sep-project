@@ -36,4 +36,12 @@ class MenuType extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the menu type for user.
+     */
+    public function menu_item()
+    {
+        return $this->hasMany(MenuItem::class);
+    }
 }

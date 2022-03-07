@@ -54,4 +54,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(MenuType::class);
     }
+
+    /**
+     * Get the menu type for user.
+     */
+    public function menu_item()
+    {
+        return $this->hasMany(MenuItem::class);
+    }
 }

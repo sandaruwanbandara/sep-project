@@ -22,6 +22,8 @@ const searchQuery = ref("")
 
 let isOpen = ref(false);
 
+let isEdit = ref(false);
+
 const props = defineProps({
   user: Object,
   status: String,
@@ -35,12 +37,77 @@ const menuItemForm = useForm({
   name: "",
   description: "",
   price: "",
-  availability: true,
-  display: true
+  availability: false,
+  display: false
 });
 
 function menuItemFormSubmit(){
+  if (isEdit.value) {
+    menuItemForm.put(route("menu_item.update"), {
+      onSuccess: () => resetForm(),
+    });
+  } else {
+    menuItemForm.post(route("menu_item.store"), {
+      onFinish: () => resetForm(),
+    });
+  }
+}
 
+function resetForm() {
+  menuItemForm.name = ""
+  menuItemForm.id = ""
+  menuItemForm.type = ""
+  menuItemForm.description = ""
+  menuItemForm.price = ""
+  menuItemForm.availability = false,
+  menuItemForm.display = false
+  isEdit.value = false
+  formButtonType.value = 'Create'
+}
+
+const filteredItems = computed(() => {
+  return props.items.data.filter((item) => {
+    return (
+      searchQuery.value.toLowerCase().length === 0 ||
+      item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+  });
+});
+
+const deleteForm = useForm({
+  id: "",
+});
+
+function deleteItem(id) {
+  setIsOpen(true)
+  deleteForm.id = id
+}
+
+function deleteItemConfirm() {
+  deleteForm.delete(route("menu_item.destroy"), {
+    onFinish: () => resetDeleteForm(),
+  });
+}
+
+function resetDeleteForm() {
+  setIsOpen(false);
+  deleteForm.id = "";
+}
+
+function setIsOpen(value) {
+  isOpen.value = value;
+}
+
+function editItem(item) {
+  menuItemForm.name = item.name
+  menuItemForm.id = item.id
+  menuItemForm.type = item.type.id
+  menuItemForm.description = item.description
+  menuItemForm.price = item.price
+  menuItemForm.availability = item.availability
+  menuItemForm.display = item.display
+  isEdit.value = true
+  formButtonType.value = 'Update'
 }
 
 </script>
@@ -62,6 +129,7 @@ function menuItemFormSubmit(){
 
     <Dialog
       :open="isOpen"
+      @close="setIsOpen"
       class="fixed inset-0 z-10 overflow-y-auto"
     >
       <div class="flex items-center justify-center min-h-screen">
@@ -72,9 +140,11 @@ function menuItemFormSubmit(){
           <p>Are you sure you want to continue? This action cannot be undone.</p>
           <button
             class="mr-2 justify-center px-2 py-1 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700"
+            @click="deleteItemConfirm"
           >Yes</button>
           <button
             class="justify-center px-2 py-1 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+            @click="setIsOpen(false)"
           >Cancel</button>
         </div>
       </div>
@@ -94,7 +164,7 @@ function menuItemFormSubmit(){
                         class="block mb-2 text-sm font-bold text-gray-700"
                         for="firstName"
                       >
-                        Menu Category
+                        Menu Type
                       </label>
                       <BreezeSelect
                         id="type"
@@ -206,7 +276,7 @@ function menuItemFormSubmit(){
                         id="search"
                         type="text"
                         class="pl-8 mt-1 block w-full appearance-none rounded-r rounded-l sm:rounded-l-none"
-                        placeholder="Search by menu item"
+                        placeholder="Search by menu item name"
                         v-model="searchQuery"
                       />
                     </div>
@@ -217,7 +287,7 @@ function menuItemFormSubmit(){
                         <thead>
                           <tr>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
-                              Menu category
+                              Menu type
                             </th>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
                               Menu item name
@@ -232,7 +302,7 @@ function menuItemFormSubmit(){
                               Availability
                             </th>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
-                              Show/Hide
+                              Display
                             </th>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
 
@@ -240,7 +310,10 @@ function menuItemFormSubmit(){
                           </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                          <tr>
+                          <tr  
+                            v-for="item in filteredItems"
+                            :key="item.id"
+                          >
                             <td class="px-6 py-4 whitespace-nowrap">
                               <div class="flex items-center">
                                 <div class="flex">
@@ -249,31 +322,32 @@ function menuItemFormSubmit(){
                                     class="flex-shrink-0 h-6 w-6 text-indigo-600"
                                     aria-hidden="true"
                                   />
-                                  <span class="ml-2 text-sm font-medium text-gray-900"></span>
+                                  <span class="ml-2 text-sm font-medium text-gray-900">{{item.type.name}}</span>
                                 </div>
                               </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                              <div class="text-sm text-gray-900">
-                              </div>
+                              <div class="text-sm text-gray-900">{{item.name}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                              <div class="text-sm text-gray-500"></div>
+                              <div class="text-sm text-gray-500">{{item.price}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <div class="text-sm text-gray-500"></div>
+                              <div class="text-sm text-gray-500">{{item.description}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <div class="text-sm text-gray-500"></div>
+                              <div class="text-sm text-gray-500">{{item.availability}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <div class="text-sm text-gray-500"></div>
+                              <div class="text-sm text-gray-500">{{item.display}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <a
+                                @click="editItem(item)"
                                 class="text-indigo-600 hover:text-indigo-900 mr-3"
                               >Edit</a>
                               <a
+                                @click="deleteItem(item.id)"
                                 class="text-red-600 hover:text-red-900"
                               >Delete</a>
                             </td>
@@ -282,17 +356,17 @@ function menuItemFormSubmit(){
                       </table>
                       <div class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
                         <span class="text-xs xs:text-sm text-gray-900">
-                          Showing 1 to 1 of 2 Entries
+                          Showing {{items.from}} to {{items.to}} of {{items.total}} Entries
                         </span>
                         <div class="inline-flex mt-2 xs:mt-0">
                           <a
-                            href="#"
+                            :href="items.prev_page_url"
                             class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-l"
                           >
                             Prev
                           </a>
                           <a
-                            href="#"
+                            :href="items.next_page_url"
                             class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-r"
                           >
                             Next
