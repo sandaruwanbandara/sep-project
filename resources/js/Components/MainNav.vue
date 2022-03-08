@@ -146,7 +146,7 @@ export default {
             </span>
           </a>
           <a
-            href="/"
+            :href="route('menu.index')"
             class="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
           >
             <component
@@ -306,7 +306,7 @@ export default {
                   </span>
                 </a>
                 <a
-                  href="/"
+                  :href="route('menu.index')"
                   class="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
                 >
                   <component

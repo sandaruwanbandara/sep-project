@@ -15,53 +15,21 @@ import {
   DialogDescription,
 } from "@headlessui/vue";
 
-let formButtonType = ref('Create')
+let isOpen = ref(false);
 
 const searchQuery = ref("")
 
-let isOpen = ref(false);
-
-let isEdit = ref(false);
+const searchAddedQuery = ref("")
 
 const props = defineProps({
   user: Object,
   status: String,
-  items: Object,
-  types : Object
+  menu: Object,
+  items: Object
 });
 
-const menuItemForm = useForm({
-  id: "",
-  type: "",
-  name: "",
-  description: "",
-  price: "",
-  availability: false,
-  display: false
-});
-
-function menuItemFormSubmit(){
-  if (isEdit.value) {
-    menuItemForm.put(route("menu_item.update"), {
-      onSuccess: () => resetForm(),
-    });
-  } else {
-    menuItemForm.post(route("menu_item.store"), {
-      onFinish: () => resetForm(),
-    });
-  }
-}
-
-function resetForm() {
-  menuItemForm.name = ""
-  menuItemForm.id = ""
-  menuItemForm.type = ""
-  menuItemForm.description = ""
-  menuItemForm.price = ""
-  menuItemForm.availability = false,
-  menuItemForm.display = false
-  isEdit.value = false
-  formButtonType.value = 'Create'
+function setIsOpen(value) {
+  isOpen.value = value;
 }
 
 const filteredItems = computed(() => {
@@ -73,40 +41,12 @@ const filteredItems = computed(() => {
   });
 });
 
-const deleteForm = useForm({
-  id: "",
-});
+function addItem(item){
 
-function deleteItem(id) {
-  setIsOpen(true)
-  deleteForm.id = id
 }
 
-function deleteItemConfirm() {
-  deleteForm.delete(route("menu_item.destroy"), {
-    onFinish: () => resetDeleteForm(),
-  });
-}
+function removeItem(item){
 
-function resetDeleteForm() {
-  setIsOpen(false);
-  deleteForm.id = "";
-}
-
-function setIsOpen(value) {
-  isOpen.value = value;
-}
-
-function editItem(item) {
-  menuItemForm.name = item.name
-  menuItemForm.id = item.id
-  menuItemForm.type = item.type.id
-  menuItemForm.description = item.description
-  menuItemForm.price = item.price
-  menuItemForm.availability = (item.availability == 'Yes') ? true : false
-  menuItemForm.display = (item.display == 'Yes') ? true : false
-  isEdit.value = true
-  formButtonType.value = 'Update'
 }
 
 </script>
@@ -114,7 +54,7 @@ function editItem(item) {
 <template>
   <BreezeAuthenticatedLayout>
 
-    <Head title="Menu Items" />
+    <Head title="Menus" />
 
     <BreezeValidationErrors />
 
@@ -122,7 +62,7 @@ function editItem(item) {
 
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Menu Items
+        View {{menu.name}} Menu
       </h2>
     </template>
 
@@ -156,109 +96,131 @@ function editItem(item) {
           <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
               <div class="p-6 bg-white border-b border-gray-200">
-                <form @submit.prevent="menuItemFormSubmit">
-                  <div class="mb-4 md:flex md:justify-start">
-                    <div class="mb-4 md:mr-2 flex-1">
-                      <label
-                        class="block mb-2 text-sm font-bold text-gray-700"
-                        for="firstName"
-                      >
-                        Menu Type
-                      </label>
-                      <BreezeSelect
-                        id="type"
-                        v-model="menuItemForm.type"
-                        :options="types"
-                      />
-                    </div>
-                    <div class="md:ml-2 flex-1">
-                      <label
-                        class="block mb-2 text-sm font-bold text-gray-700"
-                        for="lastName"
-                      >
-                        Menu Item Name
-                      </label>
+                  <div>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Menu Items in Menu {{menu.name}}</h3>
+                  </div>
+                  <div class="my-2 flex sm:flex-row flex-col">
+                    <div class="block relative">
+                      <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                        <svg
+                          viewBox="0 0 24 24"
+                          class="h-4 w-4 fill-current text-gray-500"
+                        >
+                          <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z">
+                          </path>
+                        </svg>
+                      </span>
                       <BreezeInput
-                        id="display_name"
+                        id="search"
                         type="text"
-                        class="mt-1 block w-full"
-                        placeholder="Name"
-                        v-model="menuItemForm.name"
+                        class="pl-8 mt-1 block w-full appearance-none rounded-r rounded-l sm:rounded-l-none"
+                        placeholder="Search by menu item name"
+                        v-model="searchAddedQuery"
                       />
-                    </div>
-                    <div class="md:ml-2 flex-1">
-                      <label
-                        class="block mb-2 text-sm font-bold text-gray-700"
-                        for="lastName"
-                      >
-                        Description
-                      </label>
-                      <BreezeInput
-                        id="display_name"
-                        type="text"
-                        class="mt-1 block w-full"
-                        placeholder="Description"
-                        v-model="menuItemForm.description"
-                      />
-                    </div>
-                    <div class="md:ml-2 flex-1">
-                      <label
-                        class="block mb-2 text-sm font-bold text-gray-700"
-                        for="lastName"
-                      >
-                        Price
-                      </label>
-                      <BreezeInput
-                        id="display_name"
-                        type="text"
-                        class="mt-1 block w-full"
-                        placeholder="Price"
-                        v-model="menuItemForm.price"
-                      />
-                    </div>
-                    <div class="md:ml-2 flex-1">
-                      <label
-                        class="block mb-2 text-sm font-bold text-gray-700"
-                        for="lastName"
-                      >
-                        Availability
-                      </label>
-                      <input type="checkbox" v-model="menuItemForm.availability" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    </div>
-                    <div class="md:ml-2 flex-1">
-                      <label
-                        class="block mb-2 text-sm font-bold text-gray-700"
-                        for="lastName"
-                      >
-                        Display
-                      </label>
-                      <input type="checkbox" v-model="menuItemForm.display" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     </div>
                   </div>
-                  <div class="mb-4 md:flex md:justify-start">
-                    <div>
-                      <BreezeButton
-                        :class="{ 'opacity-25': menuItemForm.processing, 'py-2': 'py-2' }"
-                        :disabled="menuItemForm.processing"
-                      >
-                        {{formButtonType}}
-                      </BreezeButton>
+                  <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                    <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
+                      <table class="min-w-full leading-normal">
+                        <thead>
+                          <tr>
+                            <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
+                              Menu type
+                            </th>
+                            <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
+                              Menu item name
+                            </th>
+                            <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
+                              Description
+                            </th>
+                            <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
+                              Price
+                            </th>
+                            <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
+                              Availability
+                            </th>
+                            <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
+                              Display
+                            </th>
+                            <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
+
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                          <tr  
+                            v-for="item in filteredItems"
+                            :key="item.id"
+                          >
+                            <td class="px-6 py-4 whitespace-nowrap">
+                              <div class="flex items-center">
+                                <div class="flex">
+                                  <component
+                                    :is="BookmarkIcon"
+                                    class="flex-shrink-0 h-6 w-6 text-indigo-600"
+                                    aria-hidden="true"
+                                  />
+                                  <span class="ml-2 text-sm font-medium text-gray-900">{{item.type.name}}</span>
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                              <div class="text-sm text-gray-900">{{item.name}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                              <div class="text-sm text-gray-500">{{item.description}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <div class="text-sm text-gray-500">{{item.price}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <div class="text-sm text-gray-500">{{item.availability}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <div class="text-sm text-gray-500">{{item.display}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                              <a
+                                @click="removeItem(item)"
+                                class="text-indigo-600 hover:text-indigo-900 mr-3"
+                              >Remove from Menu</a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
+                        <span class="text-xs xs:text-sm text-gray-900">
+                          Showing {{items.from}} to {{items.to}} of {{items.total}} Entries
+                        </span>
+                        <div class="inline-flex mt-2 xs:mt-0">
+                          <a
+                            :href="items.prev_page_url"
+                            class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-l"
+                          >
+                            Prev
+                          </a>
+                          <a
+                            :href="items.next_page_url"
+                            class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-r"
+                          >
+                            Next
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </form>
               </div>
             </div>
           </div>
         </div>
-
         <!-- Page Content -->
-        <div class="py-1">
+        <div class="py-6">
           <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
               <div class="p-6 bg-white border-b border-gray-200">
                 <div>
                   <div>
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">Menu Items</h3>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Add Menu Items to {{menu.name}} Menu</h3>
                   </div>
                   <div class="my-2 flex sm:flex-row flex-col">
                     <div class="block relative">
@@ -342,13 +304,9 @@ function editItem(item) {
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <a
-                                @click="editItem(item)"
+                                @click="addItem(item)"
                                 class="text-indigo-600 hover:text-indigo-900 mr-3"
-                              >Edit</a>
-                              <a
-                                @click="deleteItem(item.id)"
-                                class="text-red-600 hover:text-red-900"
-                              >Delete</a>
+                              >Add To Menu</a>
                             </td>
                           </tr>
                         </tbody>

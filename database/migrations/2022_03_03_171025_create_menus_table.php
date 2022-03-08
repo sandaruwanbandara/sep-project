@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('name');
+            $table->text('description')->nullable();
             $table->time('available_from', $precision = 0)->nullable();
             $table->time('available_to', $precision = 0)->nullable();
             $table->integer('availability')->default(1);

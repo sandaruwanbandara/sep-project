@@ -30,36 +30,36 @@ const props = defineProps({
   types : Object
 });
 
-const menuItemForm = useForm({
+const menuForm = useForm({
   id: "",
-  type: "",
   name: "",
   description: "",
-  price: "",
+  available_from: "",
+  available_to: "",
   availability: false,
   display: false
 });
 
-function menuItemFormSubmit(){
+function menuFormSubmit(){
   if (isEdit.value) {
-    menuItemForm.put(route("menu_item.update"), {
+    menuForm.put(route("menu.update"), {
       onSuccess: () => resetForm(),
     });
   } else {
-    menuItemForm.post(route("menu_item.store"), {
-      onFinish: () => resetForm(),
+    menuForm.post(route("menu.store"), {
+      onSuccess: () => resetForm(),
     });
   }
 }
 
 function resetForm() {
-  menuItemForm.name = ""
-  menuItemForm.id = ""
-  menuItemForm.type = ""
-  menuItemForm.description = ""
-  menuItemForm.price = ""
-  menuItemForm.availability = false,
-  menuItemForm.display = false
+  menuForm.name = ""
+  menuForm.id = ""
+  menuForm.description = ""
+  menuForm.available_from = ""
+  menuForm.available_to = ""
+  menuForm.availability = false,
+  menuForm.display = false
   isEdit.value = false
   formButtonType.value = 'Create'
 }
@@ -83,7 +83,7 @@ function deleteItem(id) {
 }
 
 function deleteItemConfirm() {
-  deleteForm.delete(route("menu_item.destroy"), {
+  deleteForm.delete(route("menu.destroy"), {
     onFinish: () => resetDeleteForm(),
   });
 }
@@ -98,16 +98,17 @@ function setIsOpen(value) {
 }
 
 function editItem(item) {
-  menuItemForm.name = item.name
-  menuItemForm.id = item.id
-  menuItemForm.type = item.type.id
-  menuItemForm.description = item.description
-  menuItemForm.price = item.price
-  menuItemForm.availability = (item.availability == 'Yes') ? true : false
-  menuItemForm.display = (item.display == 'Yes') ? true : false
+  menuForm.name = item.name
+  menuForm.id = item.id
+  menuForm.description = item.description
+  menuForm.available_from = item.available_from
+  menuForm.available_to = item.available_to
+  menuForm.availability = (item.availability == 'Yes') ? true : false
+  menuForm.display = (item.display == 'Yes') ? true : false
   isEdit.value = true
   formButtonType.value = 'Update'
 }
+
 
 </script>
 
@@ -122,7 +123,7 @@ function editItem(item) {
 
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Menu Items
+        Menu
       </h2>
     </template>
 
@@ -156,34 +157,21 @@ function editItem(item) {
           <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
               <div class="p-6 bg-white border-b border-gray-200">
-                <form @submit.prevent="menuItemFormSubmit">
+                <form @submit.prevent="menuFormSubmit">
                   <div class="mb-4 md:flex md:justify-start">
-                    <div class="mb-4 md:mr-2 flex-1">
-                      <label
-                        class="block mb-2 text-sm font-bold text-gray-700"
-                        for="firstName"
-                      >
-                        Menu Type
-                      </label>
-                      <BreezeSelect
-                        id="type"
-                        v-model="menuItemForm.type"
-                        :options="types"
-                      />
-                    </div>
                     <div class="md:ml-2 flex-1">
                       <label
                         class="block mb-2 text-sm font-bold text-gray-700"
                         for="lastName"
                       >
-                        Menu Item Name
+                        Menu Name
                       </label>
                       <BreezeInput
                         id="display_name"
                         type="text"
                         class="mt-1 block w-full"
                         placeholder="Name"
-                        v-model="menuItemForm.name"
+                        v-model="menuForm.name"
                       />
                     </div>
                     <div class="md:ml-2 flex-1">
@@ -198,7 +186,7 @@ function editItem(item) {
                         type="text"
                         class="mt-1 block w-full"
                         placeholder="Description"
-                        v-model="menuItemForm.description"
+                        v-model="menuForm.description"
                       />
                     </div>
                     <div class="md:ml-2 flex-1">
@@ -206,14 +194,29 @@ function editItem(item) {
                         class="block mb-2 text-sm font-bold text-gray-700"
                         for="lastName"
                       >
-                        Price
+                        Avilable From
                       </label>
                       <BreezeInput
                         id="display_name"
-                        type="text"
+                        type="time"
                         class="mt-1 block w-full"
-                        placeholder="Price"
-                        v-model="menuItemForm.price"
+                        placeholder="From"
+                        v-model="menuForm.available_from"
+                      />
+                    </div>
+                    <div class="md:ml-2 flex-1">
+                      <label
+                        class="block mb-2 text-sm font-bold text-gray-700"
+                        for="lastName"
+                      >
+                        Avilable To
+                      </label>
+                      <BreezeInput
+                        id="display_name"
+                        type="time"
+                        class="mt-1 block w-full"
+                        placeholder="To"
+                        v-model="menuForm.available_to"
                       />
                     </div>
                     <div class="md:ml-2 flex-1">
@@ -223,7 +226,7 @@ function editItem(item) {
                       >
                         Availability
                       </label>
-                      <input type="checkbox" v-model="menuItemForm.availability" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                      <input type="checkbox" v-model="menuForm.availability" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     </div>
                     <div class="md:ml-2 flex-1">
                       <label
@@ -232,14 +235,14 @@ function editItem(item) {
                       >
                         Display
                       </label>
-                      <input type="checkbox" v-model="menuItemForm.display" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                      <input type="checkbox" v-model="menuForm.display" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     </div>
                   </div>
                   <div class="mb-4 md:flex md:justify-start">
                     <div>
                       <BreezeButton
-                        :class="{ 'opacity-25': menuItemForm.processing, 'py-2': 'py-2' }"
-                        :disabled="menuItemForm.processing"
+                        :class="{ 'opacity-25': menuForm.processing, 'py-2': 'py-2' }"
+                        :disabled="menuForm.processing"
                       >
                         {{formButtonType}}
                       </BreezeButton>
@@ -258,7 +261,7 @@ function editItem(item) {
               <div class="p-6 bg-white border-b border-gray-200">
                 <div>
                   <div>
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">Menu Items</h3>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Menus</h3>
                   </div>
                   <div class="my-2 flex sm:flex-row flex-col">
                     <div class="block relative">
@@ -275,7 +278,7 @@ function editItem(item) {
                         id="search"
                         type="text"
                         class="pl-8 mt-1 block w-full appearance-none rounded-r rounded-l sm:rounded-l-none"
-                        placeholder="Search by menu item name"
+                        placeholder="Search by menu name"
                         v-model="searchQuery"
                       />
                     </div>
@@ -286,16 +289,16 @@ function editItem(item) {
                         <thead>
                           <tr>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
-                              Menu type
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
-                              Menu item name
+                              Menu Name
                             </th>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
                               Description
                             </th>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
-                              Price
+                              Available From
+                            </th>
+                            <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
+                              Available To
                             </th>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
                               Availability
@@ -321,18 +324,18 @@ function editItem(item) {
                                     class="flex-shrink-0 h-6 w-6 text-indigo-600"
                                     aria-hidden="true"
                                   />
-                                  <span class="ml-2 text-sm font-medium text-gray-900">{{item.type.name}}</span>
+                                  <span class="ml-2 text-sm font-medium text-gray-900">{{item.name}}</span>
                                 </div>
                               </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                              <div class="text-sm text-gray-900">{{item.name}}</div>
+                              <div class="text-sm text-gray-900">{{item.description}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                              <div class="text-sm text-gray-500">{{item.description}}</div>
+                              <div class="text-sm text-gray-500">{{item.available_from}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <div class="text-sm text-gray-500">{{item.price}}</div>
+                              <div class="text-sm text-gray-500">{{item.available_to}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               <div class="text-sm text-gray-500">{{item.availability}}</div>
@@ -341,6 +344,10 @@ function editItem(item) {
                               <div class="text-sm text-gray-500">{{item.display}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                              <a
+                                :href="route('menu.show',item.id)"
+                                class="text-indigo-600 hover:text-indigo-900 mr-3"
+                              >View</a>
                               <a
                                 @click="editItem(item)"
                                 class="text-indigo-600 hover:text-indigo-900 mr-3"
