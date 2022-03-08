@@ -40,6 +40,14 @@ class Menu extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Get the menu type for user.
+     */
+    public function items()
+    {
+        return $this->hasMany(ItemsInMenu::class);
+    }
+
     public function getAvailabilityAttribute($value)
     {
         return $value ? 'Yes' : 'No';

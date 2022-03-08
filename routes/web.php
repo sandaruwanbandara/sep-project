@@ -62,6 +62,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/menu/update', 'update')->name('menu.update');
         Route::delete('/menu', 'destroy')->name('menu.destroy');
         Route::get('/menu/{id}', 'show')->name('menu.show');
+        Route::post('/menu/add', 'addItem')->name('menu.item.add');
+        Route::delete('/menu/remove', 'deleteItem')->name('menu.item.remove');
     });
 
 });

@@ -9,6 +9,7 @@ use App\Models\Menu;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MenuItem;
+use App\Models\ItemsInMenu;
 
 class MenuController extends Controller
 {
@@ -65,22 +66,13 @@ class MenuController extends Controller
     {
         $menu = Auth::user()->menu()->findOrFail($id);
 
+        // return $menu->items()->with('menu_item','menu_item.type')->paginate(100);
         return Inertia::render('MenuShow',[
             'user' => Auth::user(),
             'menu' => $menu,
-            'items' => Auth::user()->menu_item()->with('type')->paginate(100)
+            'items' => Auth::user()->menu_item()->with('type')->paginate(100),
+            'menu_items' => $menu->items()->with('menu_item','menu_item.type')->paginate(100)
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Menu  $menu
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Menu $menu)
-    {
-        //
     }
 
     /**
@@ -123,12 +115,56 @@ class MenuController extends Controller
     public function destroy(Request $request)
     {
         $request->validate([
-            'id' => 'required',
+            'id' => 'required|exists:menus,id',
         ]);
         $item = Auth::user()->menu()->findOrFail($request->id);
 
         $item->delete();
 
         return redirect()->route('menu.index')->with(['message' => 'successfully deleted '.$item->name.' menu item']);
+    }
+
+     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function addItem(Request $request)
+    {
+        $request->validate([
+            'menu_id' => 'required|exists:menus,id',
+            'item_id' => 'required|exists:menu_items,id',
+        ]);
+        $user = Auth::user();
+        $menu = Auth::user()->menu()->findOrFail($request->menu_id);
+        $item = Auth::user()->menu_item()->findOrFail($request->item_id);
+
+        $user->items_in_menu()->create([
+            'menu_id' => $request->menu_id,
+            'menu_item_id' => $request->item_id,
+        ]);
+
+        return redirect()->back()->with(['message' => 'successfully added '.$item->name.' menu item to '.$menu->name]);
+    }
+
+     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteItem(Request $request)
+    {
+        $request->validate([
+            'menu_id' => 'required|exists:menus,id',
+            'item_id' => 'required|exists:items_in_menu,id',
+        ]);
+        $user = Auth::user();
+        $item = Auth::user()->items_in_menu()->findOrFail($request->item_id);
+
+        $item->delete();
+
+        return redirect()->back()->with(['message' => 'successfully deleted menu item']);
     }
 }

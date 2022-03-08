@@ -346,15 +346,15 @@ function editItem(item) {
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <a
                                 :href="route('menu.show',item.id)"
-                                class="text-indigo-600 hover:text-indigo-900 mr-3"
+                                class="cursor-pointer text-indigo-600 hover:text-indigo-900 mr-3"
                               >View</a>
                               <a
                                 @click="editItem(item)"
-                                class="text-indigo-600 hover:text-indigo-900 mr-3"
+                                class="cursor-pointer text-indigo-600 hover:text-indigo-900 mr-3"
                               >Edit</a>
                               <a
                                 @click="deleteItem(item.id)"
-                                class="text-red-600 hover:text-red-900"
+                                class="cursor-pointer text-red-600 hover:text-red-900"
                               >Delete</a>
                             </td>
                           </tr>

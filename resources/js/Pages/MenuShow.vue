@@ -25,7 +25,8 @@ const props = defineProps({
   user: Object,
   status: String,
   menu: Object,
-  items: Object
+  items: Object,
+  menu_items: Object
 });
 
 function setIsOpen(value) {
@@ -41,12 +42,45 @@ const filteredItems = computed(() => {
   });
 });
 
-function addItem(item){
+const filteredMenuItems = computed(() => {
+  return props.menu_items.data.filter((item) => {
+    return (
+      searchAddedQuery.value.toLowerCase().length === 0 ||
+      item.menu_item.name.toLowerCase().includes(searchAddedQuery.value.toLowerCase())
+    );
+  });
+});
 
+const addItemForm = useForm({
+  menu_id: props.menu.id,
+  item_id: "",
+});
+
+function resetAddItemForm(){
+  addItemForm.item_id = "";
 }
 
-function removeItem(item){
+function addItem(item){
+  addItemForm.item_id = item.id
+  addItemForm.post(route("menu.item.add"), {
+    onSuccess: () => resetAddItemForm(),
+  });
+}
 
+const removeItemForm = useForm({
+  menu_id: props.menu.id,
+  item_id: "",
+});
+
+function resetRemoveItemForm(){
+  removeItemForm.item_id = "";
+}
+
+function removeItem(item){  
+  removeItemForm.item_id = item.id
+  removeItemForm.delete(route("menu.item.remove"), {
+    onSuccess: () => resetRemoveItemForm(),
+  });
 }
 
 </script>
@@ -149,7 +183,7 @@ function removeItem(item){
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                           <tr  
-                            v-for="item in filteredItems"
+                            v-for="item in filteredMenuItems"
                             :key="item.id"
                           >
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -160,29 +194,29 @@ function removeItem(item){
                                     class="flex-shrink-0 h-6 w-6 text-indigo-600"
                                     aria-hidden="true"
                                   />
-                                  <span class="ml-2 text-sm font-medium text-gray-900">{{item.type.name}}</span>
+                                  <span class="ml-2 text-sm font-medium text-gray-900">{{item.menu_item.type.name}}</span>
                                 </div>
                               </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                              <div class="text-sm text-gray-900">{{item.name}}</div>
+                              <div class="text-sm text-gray-900">{{item.menu_item.name}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                              <div class="text-sm text-gray-500">{{item.description}}</div>
+                              <div class="text-sm text-gray-500">{{item.menu_item.description}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <div class="text-sm text-gray-500">{{item.price}}</div>
+                              <div class="text-sm text-gray-500">{{item.menu_item.price}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <div class="text-sm text-gray-500">{{item.availability}}</div>
+                              <div class="text-sm text-gray-500">{{item.menu_item.availability}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <div class="text-sm text-gray-500">{{item.display}}</div>
+                              <div class="text-sm text-gray-500">{{item.menu_item.display}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <a
                                 @click="removeItem(item)"
-                                class="text-indigo-600 hover:text-indigo-900 mr-3"
+                                class="cursor-pointer text-indigo-600 hover:text-indigo-900 mr-3"
                               >Remove from Menu</a>
                             </td>
                           </tr>
@@ -305,7 +339,7 @@ function removeItem(item){
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <a
                                 @click="addItem(item)"
-                                class="text-indigo-600 hover:text-indigo-900 mr-3"
+                                class="cursor-pointer text-indigo-600 hover:text-indigo-900 mr-3"
                               >Add To Menu</a>
                             </td>
                           </tr>
