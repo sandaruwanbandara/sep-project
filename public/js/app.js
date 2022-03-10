@@ -24851,6 +24851,11 @@ __webpack_require__.r(__webpack_exports__);
     var searchQuery = (0,vue__WEBPACK_IMPORTED_MODULE_7__.ref)("");
     var isOpen = (0,vue__WEBPACK_IMPORTED_MODULE_7__.ref)(false);
     var isEdit = (0,vue__WEBPACK_IMPORTED_MODULE_7__.ref)(false);
+
+    function scrollToTop() {
+      window.scrollTo(0, 0);
+    }
+
     var menuForm = (0,_inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_1__.useForm)({
       id: "",
       name: "",
@@ -24929,6 +24934,7 @@ __webpack_require__.r(__webpack_exports__);
       menuForm.display = item.display == 'Yes' ? true : false;
       isEdit.value = true;
       formButtonType.value = 'Update';
+      scrollToTop();
     }
 
     var __returned__ = {
@@ -24937,6 +24943,7 @@ __webpack_require__.r(__webpack_exports__);
       isOpen: isOpen,
       isEdit: isEdit,
       props: props,
+      scrollToTop: scrollToTop,
       menuForm: menuForm,
       menuFormSubmit: menuFormSubmit,
       resetForm: resetForm,
@@ -25066,6 +25073,10 @@ __webpack_require__.r(__webpack_exports__);
       id: ""
     });
 
+    function scrollToTop() {
+      window.scrollTo(0, 0);
+    }
+
     function deleteItem(id) {
       setIsOpen(true);
       deleteForm.id = id;
@@ -25098,6 +25109,7 @@ __webpack_require__.r(__webpack_exports__);
       menuItemForm.display = item.display == 'Yes' ? true : false;
       isEdit.value = true;
       formButtonType.value = 'Update';
+      scrollToTop();
     }
 
     var __returned__ = {
@@ -25111,6 +25123,7 @@ __webpack_require__.r(__webpack_exports__);
       resetForm: resetForm,
       filteredItems: filteredItems,
       deleteForm: deleteForm,
+      scrollToTop: scrollToTop,
       deleteItem: deleteItem,
       deleteItemConfirm: deleteItemConfirm,
       resetDeleteForm: resetDeleteForm,
@@ -25362,6 +25375,10 @@ __webpack_require__.r(__webpack_exports__);
       id: ""
     });
 
+    function scrollToTop() {
+      window.scrollTo(0, 0);
+    }
+
     function deleteItem(id) {
       setIsOpen(true);
       deleteForm.id = id;
@@ -25392,6 +25409,7 @@ __webpack_require__.r(__webpack_exports__);
       menu_item_form.id = item.id;
       isEdit.value = true;
       formButtonType.value = 'Update';
+      scrollToTop();
     }
 
     var __returned__ = {
@@ -25404,6 +25422,7 @@ __webpack_require__.r(__webpack_exports__);
       filteredItems: filteredItems,
       isOpen: isOpen,
       deleteForm: deleteForm,
+      scrollToTop: scrollToTop,
       deleteItem: deleteItem,
       deleteItemConfirm: deleteItemConfirm,
       resetDeleteForm: resetDeleteForm,

@@ -30,6 +30,10 @@ const props = defineProps({
   types : Object
 });
 
+function scrollToTop() {
+    window.scrollTo(0,0);
+}
+
 const menuForm = useForm({
   id: "",
   name: "",
@@ -107,6 +111,7 @@ function editItem(item) {
   menuForm.display = (item.display == 'Yes') ? true : false
   isEdit.value = true
   formButtonType.value = 'Update'
+  scrollToTop()
 }
 
 

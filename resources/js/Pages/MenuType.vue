@@ -65,6 +65,10 @@ const deleteForm = useForm({
   id: "",
 });
 
+function scrollToTop() {
+    window.scrollTo(0,0);
+}
+
 function deleteItem(id) {
   setIsOpen(true)
   deleteForm.id = id
@@ -93,6 +97,7 @@ function editItem(item) {
   menu_item_form.id = item.id
   isEdit.value = true
   formButtonType.value = 'Update'
+  scrollToTop()
 }
 </script>
 
