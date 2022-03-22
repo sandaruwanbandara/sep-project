@@ -22,7 +22,7 @@ class MenuController extends Controller
     {
         return Inertia::render('Menu',[
             'user' => Auth::user(),
-            'items' => Auth::user()->menu()->paginate(5)
+            'items' => Auth::user()->menu()->with('items')->paginate(5)
         ]);
     }
 
@@ -66,7 +66,6 @@ class MenuController extends Controller
     {
         $menu = Auth::user()->menu()->findOrFail($id);
 
-        // return $menu->items()->with('menu_item','menu_item.type')->paginate(100);
         return Inertia::render('MenuShow',[
             'user' => Auth::user(),
             'menu' => $menu,
@@ -117,11 +116,16 @@ class MenuController extends Controller
         $request->validate([
             'id' => 'required|exists:menus,id',
         ]);
-        $item = Auth::user()->menu()->findOrFail($request->id);
+        $menu = Auth::user()->menu()->findOrFail($request->id);
+        $items = $menu->items;
+        //validate existing items and cancel deletion
+        if($items->isNotEmpty()){
+            return redirect()->back()->withErrors(['message' => 'You cannot delete a Menu with items. This menu has '.$items->count(). ' items. Please clean the items first and retry']);
+        }
 
-        $item->delete();
+        $menu->delete();
 
-        return redirect()->route('menu.index')->with(['message' => 'successfully deleted '.$item->name.' menu item']);
+        return redirect()->route('menu.index')->with(['message' => 'successfully deleted '.$menu->name.' menu item']);
     }
 
      /**
@@ -139,6 +143,11 @@ class MenuController extends Controller
         $user = Auth::user();
         $menu = Auth::user()->menu()->findOrFail($request->menu_id);
         $item = Auth::user()->menu_item()->findOrFail($request->item_id);
+        $itemExists = $menu->items->where('menu_item_id',$request->item_id);
+        
+        if($itemExists->isNotEmpty()){
+            return redirect()->back()->withErrors(['message' => 'This item is already added to '.$menu->name]);
+        }
 
         $user->items_in_menu()->create([
             'menu_id' => $request->menu_id,

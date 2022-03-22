@@ -306,6 +306,9 @@ function editItem(item) {
                               Available To
                             </th>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
+                              Items In Menu
+                            </th>
+                            <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
                               Availability
                             </th>
                             <th class="px-5 py-3 border-b-2 border-indigo-600 bg-indigo-500 text-left text-xs font-semibold text-white uppercase">
@@ -341,6 +344,9 @@ function editItem(item) {
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               <div class="text-sm text-gray-500">{{item.available_to}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <div class="text-sm text-gray-500">{{item.items.length}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               <div class="text-sm text-gray-500">{{item.availability}}</div>

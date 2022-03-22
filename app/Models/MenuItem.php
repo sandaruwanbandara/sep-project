@@ -47,6 +47,11 @@ class MenuItem extends Model
     {
         return $this->belongsTo(MenuType::class);
     }
+    
+    public function getPriceAttribute($value)
+    {
+        return number_format($value,2);
+    }
 
     public function getAvailabilityAttribute($value)
     {
