@@ -34,7 +34,7 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required',
             'about' => 'required',
-            'contact' => ['required', 'min:9', 'max:10'],
+            'contact' => ['required', 'min:9', 'max:9'],
         ]);
         $user = Auth::user();
         $result = $user->update([
@@ -44,5 +44,27 @@ class ProfileController extends Controller
         ]);
 
         return redirect()->route('profile')->with(['message' => 'successfully updated the profile']);
+    }
+
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'password' => ['required'],
+            'email' => ['required'],
+        ]);
+
+        $user = Auth::user();
+        //validate password
+        if (!Hash::check($request->password, $user->password)) {
+            return redirect()->route('profile')->withErrors(["password"=>"Current password is invalid"]);
+        }
+        //validate email address
+        if ($request->email != $user->email) {
+            return redirect()->route('profile')->withErrors(["email"=>"Current email is invalid"]);
+        }
+        //remove the user account
+        $user->delete();
+
+        return redirect()->route('dashboard');
     }
 }

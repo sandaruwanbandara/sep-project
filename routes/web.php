@@ -30,12 +30,13 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        return Inertia::render('Welcome');
     })->name('dashboard');
 
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/profile', 'index')->name('profile');
         Route::post('/profile', 'update')->name('profile.update');
+        Route::post('/delete', 'destroy')->name('profile.delete');
     });
 
     Route::controller(RegisteredUserController::class)->group(function () {
