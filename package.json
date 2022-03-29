@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "@headlessui/vue": "^1.4.3",
-        "@heroicons/vue": "^1.0.5"
+        "@heroicons/vue": "^1.0.5",
+        "qrcode-vue3": "^1.4.17"
     }
 }
