@@ -19,7 +19,7 @@ class ProfileController extends Controller
     public function index()
     {
         $user =  Auth::user();
-        $user['profileUrl'] = url('restaurant/test');
+        $user['profileUrl'] = route("show.restaurant",['id' => $user->id]);
         return Inertia::render('Profile',[
             'user' => $user
         ]);
