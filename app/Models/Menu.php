@@ -57,4 +57,9 @@ class Menu extends Model
     {
         return $value ? 'Yes' : 'No';
     }
+
+    public function scopeDisplay($query)
+    {
+        return $query->where('display', '=', 1);
+    }
 }

@@ -84,9 +84,9 @@ class SearchController extends Controller
      */
     private function searchMenus($slug, $filters){
 
-        $menus = Menu::get();
+        $menus = Menu::display()->get();
         if(!empty($slug)){
-            $menus = Menu::where('name', 'LIKE', "%$slug%")->get();
+            $menus = Menu::display()->where('name', 'LIKE', "%$slug%")->get();
         }
         if(in_array('tf1',$filters)){
             $menus = $menus->where('available_from', '>=', "06:00:00")->where('available_to', '<=', "10:00:00");
@@ -125,9 +125,9 @@ class SearchController extends Controller
      */
     private function searchDishes($slug, $filters){
         
-        $menuItems = MenuItem::with('type')->get();
+        $menuItems = MenuItem::display()->with('type')->get();
         if(!empty($slug)){
-            $menuItems = MenuItem::where('name', 'LIKE', "%$slug%")->with('type')->get();
+            $menuItems = MenuItem::display()->where('name', 'LIKE', "%$slug%")->with('type')->get();
         }
         if(in_array('pf1',$filters)){
             $menuItems = $menuItems->where('price', '<=', 100);
@@ -187,7 +187,7 @@ class SearchController extends Controller
     public function showRestaurant($id)
     {
         $user = User::findOrFail($id);
-        $menus = $user->menu;
+        $menus = $user->menu()->display()->get();
         $list = [];
         foreach ($menus as $menu) {
            $item = [];
@@ -217,7 +217,7 @@ class SearchController extends Controller
      */
     public function showDish($id)
     {
-        $item = MenuItem::find($id);
+        $item = MenuItem::display()->find($id);
         return Inertia::render('ShowDish',[
             'canLogin' =>  $this->setAuthRoutes(),
             'canRegister' =>  $this->setAuthRoutes(),
@@ -236,19 +236,21 @@ class SearchController extends Controller
      */
     public function showMenu($id)
     {
-        $menucard = Menu::findOrFail($id);
+        $menucard = Menu::display()->findOrFail($id);
         $menus = $menucard->items;
         $list = [];
         foreach ($menus as $menu) {
-           $item = [];
-           $item['id'] = $menu->id;
-           $item['name'] = $menu->menu_item->name;
-           $item['desc'] = $menu->menu_item->description;
-           $item['href'] = route("show.dish",['id' => $menu->menu_item->id]);
-           $item['img'] = "/images/dish.png";
-           $item['fld_one'] = sprintf("%s LKR",$menu->menu_item->price);
-           $item['fld_two'] = sprintf("In %s",$menu->menu_item->type->name);
-           $list[] = $item;
+           if($menu->menu_item->display == "Yes"){
+            $item = [];
+            $item['id'] = $menu->id;
+            $item['name'] = $menu->menu_item->name;
+            $item['desc'] = $menu->menu_item->description;
+            $item['href'] = route("show.dish",['id' => $menu->menu_item->id]);
+            $item['img'] = "/images/dish.png";
+            $item['fld_one'] = sprintf("%s LKR",$menu->menu_item->price);
+            $item['fld_two'] = sprintf("In %s. (Availability : %s)",$menu->menu_item->type->name, $menu->menu_item->availability);
+            $list[] = $item;
+           }
         }
         return Inertia::render('ShowRestaurant',[
             'canLogin' =>  $this->setAuthRoutes(),
