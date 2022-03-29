@@ -1,18 +1,19 @@
 <script setup>
 import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
-import { Head,useForm } from "@inertiajs/inertia-vue3";
+import { Head, useForm } from "@inertiajs/inertia-vue3";
 import BreezeInput from "@/Components/Input.vue";
 import BreezeButton from "@/Components/Button.vue";
-import { reactive, ref} from "vue";
+import { reactive, ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
-import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
-import FlashMessages from '@/Components/FlashMessages.vue';
+import BreezeValidationErrors from "@/Components/ValidationErrors.vue";
+import FlashMessages from "@/Components/FlashMessages.vue";
 import {
   Dialog,
   DialogOverlay,
   DialogTitle,
   DialogDescription,
 } from "@headlessui/vue";
+import QRCodeVue3 from "qrcode-vue3";
 
 const props = defineProps({
   user: Object,
@@ -26,30 +27,30 @@ const prof_form = useForm({
 });
 
 function prof_submit() {
-  prof_form.post(route('profile.update'));
+  prof_form.post(route("profile.update"));
 }
 
 const cred_form = useForm({
-  password: '',
-  password_confirmation: '',
-  old_password: '',
+  password: "",
+  password_confirmation: "",
+  old_password: "",
 });
 
 const delete_form = useForm({
-  email: '',
-  password: '',
+  email: "",
+  password: "",
 });
 
 function cred_submit() {
-  cred_form.post(route('password.change'), {
-      onFinish: () => resetPassword(),
+  cred_form.post(route("password.change"), {
+    onFinish: () => resetPassword(),
   });
 }
 
-function resetPassword(){
-  cred_form.password = ""
-  cred_form.password_confirmation = ''
-  cred_form.old_password = ''
+function resetPassword() {
+  cred_form.password = "";
+  cred_form.password_confirmation = "";
+  cred_form.old_password = "";
 }
 
 let isOpen = ref(false);
@@ -59,21 +60,20 @@ function setIsOpen(value) {
 }
 
 function deleteAccount() {
-  setIsOpen(true)
+  setIsOpen(true);
 }
 
 function deleteAccountConfirm() {
-  delete_form.post(route('profile.delete'), {
+  delete_form.post(route("profile.delete"), {
     onFinish: () => resetDeleteForm(),
   });
 }
 
-function resetDeleteForm(){
-  delete_form.password = ""
-  delete_form.email = ''
-  setIsOpen(false)
+function resetDeleteForm() {
+  delete_form.password = "";
+  delete_form.email = "";
+  setIsOpen(false);
 }
-
 </script>
 
 <template>
@@ -83,7 +83,7 @@ function resetDeleteForm(){
 
     <BreezeValidationErrors />
 
-    <FlashMessages/>
+    <FlashMessages />
 
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -133,7 +133,8 @@ function resetDeleteForm(){
                   />
                 </div>
                 <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt class="text-sm font-medium text-gray-500">About</dt><BreezeInput
+                  <dt class="text-sm font-medium text-gray-500">About</dt>
+                  <BreezeInput
                     id="about"
                     type="text"
                     class="mt-1 block w-full"
@@ -160,6 +161,26 @@ function resetDeleteForm(){
                 <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">Last modified at</dt>
                   <dd class="mt-1 text-xs text-gray-900 sm:mt-0 sm:col-span-2">{{ user.updated_at }}</dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500">Your Profile QR</dt>
+                  <dd class="mt-1 text-xs text-gray-900 sm:mt-0 sm:col-span-2">
+                    <QRCodeVue3
+                      :width="150"
+                      :height="150"
+                      :value="user.profileUrl"
+                      :qrOptions="{ typeNumber: 0, mode: 'Byte', errorCorrectionLevel: 'H' }"
+                      :imageOptions="{ hideBackgroundDots: true, imageSize: 0.4, margin: 0 }"
+                      :dotsOptions="{
+                        type: 'square',
+                        color: '#000',
+                      }"
+                      :backgroundOptions="{ color: '#ffffff' }"
+                      :cornersSquareOptions="{ type: 'square', color: '#000000' }"
+                      :cornersDotOptions="{ type: undefined, color: '#000000' }"
+                      fileExt="png"
+                    />
+                  </dd>
                 </div>
               </dl>
             </div>
@@ -230,43 +251,43 @@ function resetDeleteForm(){
 
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-            <div class="px-4 py-5 sm:px-6">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">Delete Account</h3>
-              <p class="mt-1 max-w-2xl text-sm text-red-500">Once you delete your account all of data will be lost and cannot be recovered.</p>
-            </div>
-            <div class="border-t border-gray-200">
-              <dl>
-                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt class="text-sm font-medium text-gray-500">Email address</dt>
-                  <BreezeInput
-                    id="dlt_email"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="delete_form.email"
-                  />
-                </div>
-                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt class="text-sm font-medium text-gray-500">Current password</dt>
-                  <BreezeInput
-                    id="dlt_password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="delete_form.password"
-                  />
-                </div>
-              </dl>
-            </div>
-            <div class="px-4 py-5 sm:px-6">
-              <BreezeButton
-                :class="{ 'opacity-25': delete_form.processing , 'bg-red-500':'bg-red-500', 'hover:bg-red-700': 'hover:bg-red-700' }"
-                :disabled="delete_form.processing"
-                @click="deleteAccount()"
-              >
-                Delete Account
-              </BreezeButton>
-            </div>
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+          <div class="px-4 py-5 sm:px-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Delete Account</h3>
+            <p class="mt-1 max-w-2xl text-sm text-red-500">Once you delete your account all of data will be lost and cannot be recovered.</p>
           </div>
+          <div class="border-t border-gray-200">
+            <dl>
+              <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">Email address</dt>
+                <BreezeInput
+                  id="dlt_email"
+                  type="text"
+                  class="mt-1 block w-full"
+                  v-model="delete_form.email"
+                />
+              </div>
+              <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">Current password</dt>
+                <BreezeInput
+                  id="dlt_password"
+                  type="password"
+                  class="mt-1 block w-full"
+                  v-model="delete_form.password"
+                />
+              </div>
+            </dl>
+          </div>
+          <div class="px-4 py-5 sm:px-6">
+            <BreezeButton
+              :class="{ 'opacity-25': delete_form.processing , 'bg-red-500':'bg-red-500', 'hover:bg-red-700': 'hover:bg-red-700' }"
+              :disabled="delete_form.processing"
+              @click="deleteAccount()"
+            >
+              Delete Account
+            </BreezeButton>
+          </div>
+        </div>
       </div>
     </div>
   </BreezeAuthenticatedLayout>

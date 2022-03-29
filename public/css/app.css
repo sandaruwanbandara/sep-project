@@ -670,6 +670,10 @@ select {
   margin-top: -0.5rem;
   margin-bottom: -0.5rem;
 }
+.-my-6 {
+  margin-top: -1.5rem;
+  margin-bottom: -1.5rem;
+}
 .-mx-2 {
   margin-left: -0.5rem;
   margin-right: -0.5rem;
@@ -677,10 +681,6 @@ select {
 .-my-3 {
   margin-top: -0.75rem;
   margin-bottom: -0.75rem;
-}
-.-my-6 {
-  margin-top: -1.5rem;
-  margin-bottom: -1.5rem;
 }
 .ml-3 {
   margin-left: 0.75rem;
@@ -808,11 +808,11 @@ select {
 .h-auto {
   height: auto;
 }
-.h-10 {
-  height: 2.5rem;
-}
 .h-24 {
   height: 6rem;
+}
+.h-10 {
+  height: 2.5rem;
 }
 .min-h-screen {
   min-height: 100vh;
@@ -853,6 +853,9 @@ select {
 .w-3 {
   width: 0.75rem;
 }
+.w-24 {
+  width: 6rem;
+}
 .w-10 {
   width: 2.5rem;
 }
@@ -864,9 +867,6 @@ select {
 }
 .w-40 {
   width: 10rem;
-}
-.w-24 {
-  width: 6rem;
 }
 .min-w-full {
   min-width: 100%;
@@ -1299,14 +1299,14 @@ select {
 .pt-9 {
   padding-top: 2.25rem;
 }
-.pb-12 {
-  padding-bottom: 3rem;
-}
 .pt-6 {
   padding-top: 1.5rem;
 }
 .pb-24 {
   padding-bottom: 6rem;
+}
+.pb-12 {
+  padding-bottom: 3rem;
 }
 .pl-10 {
   padding-left: 2.5rem;
@@ -1920,6 +1920,11 @@ select {
     line-height: 1.75rem;
   }
 
+  .sm\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
   .sm\:text-sm {
     font-size: 0.875rem;
     line-height: 1.25rem;
@@ -2004,6 +2009,11 @@ select {
   .md\:text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
+  }
+
+  .md\:text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
   }
 }
 @media (min-width: 1024px) {

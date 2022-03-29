@@ -1,3 +1,113 @@
+
+<script setup>
+import { ref,reactive } from "vue";
+import { useForm } from "@inertiajs/inertia-vue3";
+import { Inertia } from '@inertiajs/inertia'
+import MainNav from "@/Components/MainNav.vue";
+import BreezeGuestLayout from "@/Layouts/Guest.vue";
+import {
+  Dialog,
+  DialogOverlay,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  TransitionChild,
+  TransitionRoot,
+} from "@headlessui/vue";
+import { XIcon, SearchIcon } from "@heroicons/vue/outline";
+import {
+  ChevronDownIcon,
+  FilterIcon,
+  MinusSmIcon,
+  PlusSmIcon,
+  ViewGridIcon,
+  RefreshIcon,
+} from "@heroicons/vue/solid";
+import BreezeButton from "@/Components/Button.vue";
+
+const sortOptions = [
+  { name: "Newest", href: "#", current: false },
+  { name: "Items in Menu: Low to High", href: "#", current: false },
+  { name: "Items in Menu: High to Low", href: "#", current: false },
+];
+const mainCategories = [
+  { name: "Restaurants or Cafes", href: "#", id : 1 },
+  { name: "Menu Cards", href: "#", id : 2 },
+  { name: "Dishes", href: "#", id : 3 },
+];
+const filters = [
+  {
+    id: "price",
+    name: "Item Price",
+    options: [
+      { value: "pf1", label: "Below 100.00", checked: false },
+      { value: "pf2", label: "100.00 to 200.00", checked: false },
+      { value: "pf3", label: "200.00 to 500.00", checked: false },
+      { value: "pf4", label: "500.00 to 1000.00", checked: false },
+      { value: "pf5", label: "1000.00 to 5000.00", checked: false },
+      { value: "pf6", label: "Above 5000.00", checked: false },
+    ],
+  },
+  {
+    id: "time",
+    name: "Available Time",
+    options: [
+      { value: "tf1", label: "Breakfast", checked: false },
+      { value: "tf2", label: "Lunch", checked: false },
+      { value: "tf3", label: "Dinner", checked: false },
+      { value: "tf4", label: "Snacks", checked: false },
+    ],
+  },
+  {
+    id: "availability",
+    name: "Availability",
+    options: [
+      { value: "af1", label: "Available", checked: false },
+      { value: "af2", label: "Unavailable", checked: false },
+    ],
+  },
+];
+
+defineProps({
+  canLogin: Boolean,
+  canRegister: Boolean,
+  products : Array
+});
+
+const mobileFiltersOpen = ref(false);
+const searchPlaceHolder = ref("Search Restaurants or Cafe")
+
+const slug = ref("");
+const filterMainCategoryId = ref(1);
+const checkedFilters = ref([]);
+
+function setMainCategory(id, text,event){
+  this.filterMainCategoryId = id
+  this.searchPlaceHolder = "Search "+ text
+  this.find()
+}
+
+function clearFilters(){
+  window.location.reload();
+}
+
+const form = reactive({
+  slug: slug,
+  mainCategory: filterMainCategoryId,
+  checkedFilters: checkedFilters,
+})
+
+function find(){
+   Inertia.post(route('home.search'), form)
+}
+
+
+</script>
+
 <template>
   <BreezeGuestLayout
     :canLogin="canLogin"
@@ -79,7 +189,7 @@
               </div>
 
               <!-- Filters -->
-              <form id="mobileSearchForm" @submit.prevent="" class="mt-4 border-t border-gray-200">
+              <div class="mt-4 border-t border-gray-200">
                 <h3 class="sr-only">Categories</h3>
                 <ul
                   role="list"
@@ -139,6 +249,7 @@
                           :value="option.value"
                           type="checkbox"
                           :checked="option.checked"
+                           v-model="checkedFilters"
                           class="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
                         />
                         <label
@@ -151,7 +262,7 @@
                     </div>
                   </DisclosurePanel>
                 </Disclosure>
-              </form>
+              </div>
             </div>
           </TransitionChild>
         </Dialog>
@@ -170,7 +281,7 @@
 
           <div class="grid grid-cols-1 lg:grid-cols-4 gap-x-8 gap-y-10">
             <!-- Filters -->
-            <form id="mainSearchForm" @submit.prevent="" class="hidden lg:block">
+            <div class="hidden lg:block">
               <h3 class="sr-only">Categories</h3>
               <ul
                 role="list"
@@ -228,6 +339,7 @@
                         :value="option.value"
                         type="checkbox"
                         :checked="option.checked"
+                        v-model="checkedFilters"
                         class="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
                       />
                       <label
@@ -240,8 +352,7 @@
                   </div>
                 </DisclosurePanel>
               </Disclosure>
-            </form>
-
+            </div>
             <!-- Product grid -->
             <div class="lg:col-span-3">
               <div class="relative z-10 flex items-left pb-6 border-b border-gray-200">
@@ -255,14 +366,14 @@
                     </span>
                   </div>
                   <input
-                    v-model="searchForm.slug"
+                    v-model="slug"
                     type="text"
                     class="focus:ring-indigo-500 focus:border-indigo-500 block text-lg w-full py-3 pl-10 pr-12 sm:text-md border-gray-300 rounded-md"
                     :placeholder="searchPlaceHolder"
                   />
                 </div>
 
-                <BreezeButton @click="find()" class="w-1/5 mr-3 flex px-5">Find</BreezeButton>
+                <BreezeButton @click="find" class="w-1/5 mr-3 flex px-5">Find</BreezeButton>
 
                 <div class="w-1/5 mr-3 flex items-center">
                   <Menu
@@ -270,13 +381,14 @@
                     class="relative inline-block text-left"
                   >
                     <div>
-                      <MenuButton class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                      <RefreshIcon alt="reset filters" @click="clearFilters" v-if="checkedFilters.length || slug" class="cursor-pointer text-red-500 font-bold w-5 h-5" aria-hidden="true" />
+                      <!-- <MenuButton class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
                         Sort
                         <ChevronDownIcon
                           class="flex-shrink-0 -mr-1 ml-1 h-5 w-5 text-gray-400 group-hover:text-gray-500"
                           aria-hidden="true"
                         />
-                      </MenuButton>
+                      </MenuButton> -->
                     </div>
 
                     <transition
@@ -320,9 +432,9 @@
                 </div>
               </div>
               <!-- Replace with your content -->
-
               <div class="mt-8">
                 <div class="flow-root">
+                  <div v-if="!products.length" class="text-lg text-gray-400">no results found. Please try with another filter</div>
                   <ul
                     role="list"
                     class="-my-6 divide-y divide-gray-200"
@@ -334,8 +446,7 @@
                     >
                       <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
-                          :src="product.imageSrc"
-                          :alt="product.imageAlt"
+                          :src="product.img"
                           class="h-full w-full object-cover object-center"
                         />
                       </div>
@@ -346,18 +457,19 @@
                             <h3>
                               <a :href="product.href"> {{ product.name }} </a>
                             </h3>
-                            <p class="ml-4">{{ product.price }}</p>
+                            <p class="ml-4 text-sm text-gray-600">{{ product.fld_one }}</p>
                           </div>
                           <p class="mt-1 text-sm text-gray-500">{{ product.desc }}</p>
                         </div>
                         <div class="flex flex-1 items-end justify-between text-sm">
-                          <p class="text-gray-500">Availability</p>
+                          <p class="text-gray-500">{{product.fld_two}}</p>
 
                           <div class="flex">
-                            <button
+                            <a
+                              :href="product.href"
                               type="button"
                               class="font-medium text-indigo-600 hover:text-indigo-500"
-                            >View More</button>
+                            >View More</a>
                           </div>
                         </div>
                       </div>
@@ -375,141 +487,3 @@
 
   </BreezeGuestLayout>
 </template>
-
-<script setup>
-import { ref } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
-import MainNav from "@/Components/MainNav.vue";
-import BreezeGuestLayout from "@/Layouts/Guest.vue";
-import {
-  Dialog,
-  DialogOverlay,
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
-import { XIcon, SearchIcon } from "@heroicons/vue/outline";
-import {
-  ChevronDownIcon,
-  FilterIcon,
-  MinusSmIcon,
-  PlusSmIcon,
-  ViewGridIcon,
-} from "@heroicons/vue/solid";
-import BreezeButton from "@/Components/Button.vue";
-
-const sortOptions = [
-  { name: "Newest", href: "#", current: false },
-  { name: "Items in Menu: Low to High", href: "#", current: false },
-  { name: "Items in Menu: High to Low", href: "#", current: false },
-];
-const mainCategories = [
-  { name: "Restaurants or Cafes", href: "#", id : 1 },
-  { name: "Menu Cards", href: "#", id : 2 },
-  { name: "Dishes", href: "#", id : 3 },
-];
-const filters = [
-  {
-    id: "price",
-    name: "Item Price",
-    options: [
-      { value: "0-100", label: "Below 100.00", checked: false },
-      { value: "100-200", label: "100.00 to 200.00", checked: false },
-      { value: "200-500", label: "200.00 to 500.00", checked: false },
-      { value: "500-1000", label: "500.00 to 1000.00", checked: false },
-      { value: "1000-5000", label: "1000.00 to 5000.00", checked: false },
-      { value: "5000-100000", label: "Above 5000.00", checked: false },
-    ],
-  },
-  {
-    id: "time",
-    name: "Available Time",
-    options: [
-      { value: "breakfast", label: "Breakfast", checked: false },
-      { value: "lunch", label: "Lunch", checked: false },
-      { value: "dinner", label: "Dinner", checked: false },
-      { value: "evening", label: "Snacks", checked: false },
-    ],
-  },
-  {
-    id: "availability",
-    name: "Availability",
-    options: [
-      { value: "1", label: "Available", checked: false },
-      { value: "0", label: "Unavailable", checked: false },
-    ],
-  },
-];
-
-// Filtered results
-
-const products = [
-  {
-    id: 1,
-    name: "Cafe 365",
-    href: "#",
-    desc: "Located in the Colombo, Features creative cocktails and delicious food",
-    price: "",
-    imageSrc: "/images/cafe.png",
-    imageAlt: "Cafe 365",
-  },
-  {
-    id: 2,
-    name: "Sandwich",
-    href: "#",
-    desc: "Veg Sandwich",
-    price: "180.00",
-    imageSrc: "/images/dish.png",
-    imageAlt: "Veg Sandwich",
-  },
-  {
-    id: 2,
-    name: "Bourbon Street Diner",
-    href: "#",
-    desc: "Bourbon Street Diner",
-    price: "",
-    imageSrc: "/images/menucard.png",
-    imageAlt: "Bourbon Street Diner",
-  },
-];
-
-
-
-
-defineProps({
-  canLogin: Boolean,
-  canRegister: Boolean,
-});
-
-const searchForm = useForm({
-  categoryId : 1,
-  slug: "",
-});
-
-const mobileFiltersOpen = ref(false);
-
-let filterMainCategoryId = ref(1);
-const searchPlaceHolder = ref("Search Restaurants or Cafe")
-
-function setMainCategory(id, text,event){
-  this.filterMainCategoryId = id
-  this.searchForm.categoryId = this.filterMainCategoryId
-  this.searchPlaceHolder = "Search "+ text
-}
-
-function find(){
-  searchForm.post(route("home.search"), {
-    onSuccess: () => "",
-  });
-}
-
-function seachFormSubmit(){
-  
-}
-</script>

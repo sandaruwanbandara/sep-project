@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\MenuTypeController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\SearchController;
 use Inertia\Inertia;
 
 /*
@@ -20,18 +21,25 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-    ]);
-})->middleware('guest');
+Route::controller(SearchController::class)->group(function () {
+    Route::get('/', 'index')->name('dashboard');
+    Route::post('/', 'homeSearch')->name('home.search');
+    Route::get('/show/restaurant/{id}', 'showRestaurant')->name('show.restaurant');
+    Route::get('/show/dish/{id}', 'showDish')->name('show.dish');
+    Route::get('/show/menu/{id}', 'showMenu')->name('show.menu');
+});  
+
+Route::middleware(['guest'])->group(function () {
+
+    // Route::controller(SearchController::class)->group(function () {
+    //     Route::get('/show/restaurant/{id}', 'showRestaurant')->name('show.restaurant');
+    //     Route::get('/show/dish/{id}', 'showDish')->name('show.dish');
+    //     Route::get('/show/menu/{id}', 'showMenu')->name('show.menu');
+    // });
+
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
-
-    Route::get('/dashboard', function () {
-        return Inertia::render('Welcome');
-    })->name('dashboard');
 
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/profile', 'index')->name('profile');
