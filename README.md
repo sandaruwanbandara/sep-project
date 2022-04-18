@@ -1,64 +1,98 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<p align="center"><a href="http://143.110.240.163" target="_blank"><img src="http://143.110.240.163/images/burger-image.png" width="100"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<h2 align="center">Self-Serve-Menu</h2>
 
-## About Laravel
+"Self Serve Menu" is a digitalized food menu system where any restaurant or a cafe can signup and create an account freely to publish their food menus.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
+### System requirement
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Ubuntu 20.04
+- Docker
+- Docker compose
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Environment setting up
 
-## Learning Laravel
+1. Install software packages
+`sudo apt update`
+install few required packages
+`sudo apt install apt-transport-https ca-certificates curl software-properties-common`
+install docker
+`sudo apt-get install docker-ce`
+enable and start docker engine
+for more information please visit [docker installation](https://docs.docker.com/get-docker)
+<br>
+2. Download the source code repository
+`git clone https://github.com/sandaruwanbandara/sep-project.git`
+<br>
+3. Update configuration file
+copy the sample environment file
+`cp .env.example .env`
+update the below reqruied configurations as necessary
+    ```
+    APP_NAME=application_name
+    APP_ENV=local
+    APP_KEY=
+    APP_DEBUG=true
+    APP_URL=http://localhost
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=example_app
+    DB_USERNAME=root
+    DB_PASSWORD=
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    MAIL_MAILER=smtp
+    MAIL_HOST=smtp.gmail.com
+    MAIL_PORT=587
+    MAIL_USERNAME=usernameemail
+    MAIL_PASSWORD="password"
+    MAIL_ENCRYPTION=TLS
+    MAIL_FROM_ADDRESS=no-reply@ssm.com
+    MAIL_FROM_NAME="${APP_NAME}"
+    ```
+    refer laravel's environment configurations for more [here](https://laravel.com/docs/9.x/configuration#environment-configuration)
+<br>
+4. Install Composer
+download the php composer package manager using below commands
+`curl -sS https://getcomposer.org/installer | php`
+`sudo mv composer.phar /usr/local/bin/composer`
+`sudo chmod +x /usr/local/bin/composer`
+visit [compose documentation](https://getcomposer.org/) for more info
+<br>
+5. Install packages using composer
+Navigate to the root directory of the source code and execute below command to setup required packages.
+`composer install`
+provide super user permission whenever required.
+<br>
+6. Build and start the containers
+Use below commands to build docker containers and start application.
+    ```
+    cd sep-project
+    ./vendor/bin/sail up -d
+    ```
+    Laravel sail is used to spin up the environment. Visit [sail documentation](https://laravel.com/docs/9.x/sail) for additional features.
+<br>
+7. Install npm packages
+Application frontend depends on some node packages. Use below command to install those
+    ```
+    cd sep-project
+    ./vendor/bin/sail npm install
+    ./vendor/bin/sail npm run dev # if development environment
+    ./vendor/bin/sail npm run prod # if production environment
+    ```
+    provide super user permission whenever required.
+<br>
 
-## Laravel Sponsors
+8. Database migration
+To configure the database use below commands once the application containers are up and running
+`./vendor/bin/sail php artisan migrate`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Once all the configurations are done the application will be running on the configured URL or IP address.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+> This application has been developed using Laravel 9.X framework hence the [Laravel documentation](https://laravel.com/docs) can be refered to install and configure the application. Also for any troubleshooting.
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+<a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="200"></a>
