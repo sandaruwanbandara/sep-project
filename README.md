@@ -21,10 +21,10 @@ install docker
 `sudo apt-get install docker-ce`
 enable and start docker engine
 for more information please visit [docker installation](https://docs.docker.com/get-docker)
-<br>
+
 2. Download the source code repository
 `git clone https://github.com/sandaruwanbandara/sep-project.git`
-<br>
+
 3. Update configuration file
 copy the sample environment file
 `cp .env.example .env`
@@ -53,19 +53,19 @@ update the below reqruied configurations as necessary
     MAIL_FROM_NAME="${APP_NAME}"
     ```
     refer laravel's environment configurations for more [here](https://laravel.com/docs/9.x/configuration#environment-configuration)
-<br>
+
 4. Install Composer
 download the php composer package manager using below commands
 `curl -sS https://getcomposer.org/installer | php`
 `sudo mv composer.phar /usr/local/bin/composer`
 `sudo chmod +x /usr/local/bin/composer`
 visit [compose documentation](https://getcomposer.org/) for more info
-<br>
+
 5. Install packages using composer
 Navigate to the root directory of the source code and execute below command to setup required packages.
 `composer install`
 provide super user permission whenever required.
-<br>
+
 6. Build and start the containers
 Use below commands to build docker containers and start application.
     ```
@@ -73,7 +73,7 @@ Use below commands to build docker containers and start application.
     ./vendor/bin/sail up -d
     ```
     Laravel sail is used to spin up the environment. Visit [sail documentation](https://laravel.com/docs/9.x/sail) for additional features.
-<br>
+
 7. Install npm packages
 Application frontend depends on some node packages. Use below command to install those
     ```
@@ -83,7 +83,6 @@ Application frontend depends on some node packages. Use below command to install
     ./vendor/bin/sail npm run prod # if production environment
     ```
     provide super user permission whenever required.
-<br>
 
 8. Database migration
 To configure the database use below commands once the application containers are up and running
