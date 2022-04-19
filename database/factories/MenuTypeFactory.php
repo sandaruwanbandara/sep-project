@@ -17,7 +17,9 @@ class MenuTypeFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'user_id' => '',
+            'name' => 'Beverages',
+            'display_name' =>  $this->faker->text()
         ];
     }
 }

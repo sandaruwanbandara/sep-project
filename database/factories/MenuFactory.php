@@ -17,7 +17,12 @@ class MenuFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->name(),
+            'description' =>  $this->faker->text(),
+            'available_from' => '08:00',
+            'available_to' => '12:00',
+            'availability' => 1,
+            'display' => 1
         ];
     }
 }

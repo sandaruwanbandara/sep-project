@@ -17,7 +17,11 @@ class MenuItemFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->name(),
+            'description' => $this->faker->text(),
+            'price' => '1000',
+            'availability' => 1,
+            'display' => 1
         ];
     }
 }

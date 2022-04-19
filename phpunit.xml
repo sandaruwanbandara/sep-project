@@ -5,11 +5,13 @@
          colors="true"
 >
     <testsuites>
-        <testsuite name="Unit">
-            <directory suffix="Test.php">./tests/Unit</directory>
-        </testsuite>
         <testsuite name="Feature">
-            <directory suffix="Test.php">./tests/Feature</directory>
+            <directory suffix="Test.php">./tests/Feature/Auth</directory>
+            <directory suffix="Test.php">./tests/Feature/Profile</directory>
+            <directory suffix="Test.php">./tests/Feature/MenuTypes</directory>
+            <directory suffix="Test.php">./tests/Feature/MenuItems</directory>
+            <directory suffix="Test.php">./tests/Feature/Menu</directory>
+            <directory suffix="Test.php">./tests/Feature/Home</directory>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
